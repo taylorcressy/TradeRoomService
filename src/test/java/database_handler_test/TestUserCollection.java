@@ -20,9 +20,9 @@ import org.springframework.data.mongodb.core.MongoTemplate;
 
 import com.mongodb.WriteConcern;
 
-import database_handler.entities.AccountPreference;
-import database_handler.entities.Address;
-import database_handler.entities.User;
+import database_entities.AccountPreference;
+import database_entities.Address;
+import database_entities.User;
 
 public class TestUserCollection {
 

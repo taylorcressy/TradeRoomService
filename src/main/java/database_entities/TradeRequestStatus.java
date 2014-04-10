@@ -7,7 +7,7 @@
  * @since April 9, 2014
  * @version 1.0
  */
-package database_handler.entities;
+package database_entities;
 
 public enum TradeRequestStatus {
 	ACCEPTED(0), 
