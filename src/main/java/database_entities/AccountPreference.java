@@ -13,75 +13,90 @@ import java.sql.Timestamp;
 import java.util.List;
 
 public class AccountPreference {
-	transient private String passwordHash;	//Stop from sending over wire
+	transient private String passwordHash; // Stop from sending over wire
 	private String firstName;
 	private String lastName;
-	private Timestamp dob;	//Date of birth
+	private String dob; // Date of birth
 	private Address address;
 	private String defaultGeoLocation;
 	private List<Address> preferredLocations;
-	
+
 	/*
 	 * Constructor
 	 */
-	public  AccountPreference(String hash, String first, String last, Timestamp birth, Address add, String geoLoc, List<Address> prefLocs) {
-		this.passwordHash = hash;
-		this.firstName = first;
-		this.lastName = last;
-		this.dob = birth;
-		this.address = add;
-		this.defaultGeoLocation = geoLoc;
-		this.preferredLocations = prefLocs;
+	public AccountPreference(String passwordHash, String firstName, String lastName, String dob, Address address, String defaultGeoLocation,
+			List<Address> preferredLocations) {
+		this.passwordHash = passwordHash;
+		this.firstName = firstName;
+		this.lastName = lastName;
+		this.dob = dob;
+		this.address = address;
+		this.defaultGeoLocation = defaultGeoLocation;
+		this.preferredLocations = preferredLocations;
 	}
-	
+
 	/*
 	 * Getters / Setters
 	 */
 	public String getPasswordHash() {
 		return passwordHash;
 	}
+
 	public void setPasswordHash(String passwordHash) {
 		this.passwordHash = passwordHash;
 	}
+
 	public String getFirstName() {
 		return firstName;
 	}
+
 	public void setFirstName(String firstName) {
 		this.firstName = firstName;
 	}
+
 	public String getLastName() {
 		return lastName;
 	}
+
 	public void setLastName(String lastName) {
 		this.lastName = lastName;
 	}
-	public Timestamp getDob() {
+
+	public String getDob() {
 		return dob;
 	}
-	public void setDob(Timestamp dob) {
+
+	public void setDob(String dob) {
 		this.dob = dob;
 	}
+
 	public Address getAddress() {
 		return address;
 	}
+
 	public void setAddress(Address address) {
 		this.address = address;
 	}
+
 	public String getDefaultLocation() {
 		return defaultGeoLocation;
 	}
+
 	public void setDefaultLocation(String defaultLocation) {
 		this.defaultGeoLocation = defaultLocation;
 	}
+
 	public List<Address> getPreferredLocations() {
 		return preferredLocations;
 	}
+
 	public void setPreferredLocations(List<Address> preferredLocations) {
 		this.preferredLocations = preferredLocations;
 	}
-	
+
 	/*
 	 * (non-Javadoc)
+	 * 
 	 * @see java.lang.Object#hashCode()
 	 */
 	@Override
@@ -96,9 +111,10 @@ public class AccountPreference {
 		result = prime * result + ((preferredLocations == null) ? 0 : preferredLocations.hashCode());
 		return result;
 	}
-	
+
 	/*
 	 * (non-Javadoc)
+	 * 
 	 * @see java.lang.Object#equals(java.lang.Object)
 	 */
 	@Override
@@ -142,9 +158,10 @@ public class AccountPreference {
 			return false;
 		return true;
 	}
-	
+
 	/*
 	 * (non-Javadoc)
+	 * 
 	 * @see java.lang.Object#toString()
 	 */
 	@Override
@@ -152,8 +169,5 @@ public class AccountPreference {
 		return "AccountPreference [firstName=" + firstName + ", lastName=" + lastName + ", dob=" + dob + ", address=" + address
 				+ ", defaultGeoLocation=" + defaultGeoLocation + ", preferredLocations=" + preferredLocations + "]";
 	}
-	
-	
-	
-	
+
 }

@@ -20,13 +20,13 @@ public class Address {
 	/*
 	 * Constructor
 	 */
-	public Address(String streetN, String streetNum, String areaCode, String country, String city, String county, String geoLoc) {
-		this.streetName = streetN;
-		this.streetNumber = streetNum;
+	public Address(String streetName, String streetNumber, String areaCode, String country, String city, String county, String geoLocation) {
+		this.streetName = streetName;
+		this.streetNumber = streetNumber;
 		this.areaCode = areaCode;
 		this.country = country;
 		this.city = city;
-		this.geoLocation = geoLoc;
+		this.geoLocation = geoLocation;
 	}
 	
 	/*

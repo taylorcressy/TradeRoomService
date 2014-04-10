@@ -25,13 +25,13 @@ public class TradeRequest {
 	 * Constructor
 	 */
 	public TradeRequest(String from, String to, List<TradeItem> fromItems, List<TradeItem> toItems, Address preferredMeetingPlace,
-			Timestamp dateInit, TradeRequestStatus status) {
+			Timestamp dateInitiated, TradeRequestStatus status) {
 		this.from = from;
 		this.to = to;
 		this.fromItems = fromItems;
 		this.toItems = toItems;
 		this.preferredMeetingPlace = preferredMeetingPlace;
-		this.dateInitiated = dateInit;
+		this.dateInitiated = dateInitiated;
 		this.status = status;
 	}
 
