@@ -3,7 +3,7 @@
  * 
  * @author Taylor Cressy
  */
-package database_handler_test;
+package database_tests;
 
 import java.sql.Timestamp;
 import java.util.ArrayList;
