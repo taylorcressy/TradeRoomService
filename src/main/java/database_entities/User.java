@@ -10,31 +10,188 @@ package database_entities;
 
 import java.util.List;
 
+import javax.persistence.Transient;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.dao.DuplicateKeyException;
 import org.springframework.data.annotation.Id;
+import org.springframework.data.mongodb.core.MongoTemplate;
 import org.springframework.data.mongodb.core.index.Indexed;
 import org.springframework.data.mongodb.core.mapping.Document;
+import org.springframework.data.mongodb.core.query.Criteria;
+import org.springframework.data.mongodb.core.query.Query;
+import org.springframework.data.mongodb.core.query.Update;
 
-@Document(collection = "Users")
+import com.mongodb.CommandResult;
+import com.mongodb.WriteResult;
+
+@Document
 public class User {
+
+	@Transient
+	transient private static Logger log = LoggerFactory.getLogger("database-logger");
 
 	@Id
 	private String id;
-	
-	@Indexed(unique=true)
+
+	@Indexed(unique = true)
 	private String username;
 	private AccountPreference accountPreference;
 	private List<Integer> ranks;
 	private List<String> friendsList;
 	private List<TradeRequest> tradeRequests;
 
-	// No need to reference the Trade Room ID, will be held on it's own
+	public User() {
+		// Empty constructor
+	}
 
+	/**
+	 * Convenience constructor to just populate the username for future DB calls
+	 * 
+	 * @param username
+	 */
+	public User(String username) {
+		this.username = username;
+	}
+
+	/**
+	 * The main constructor for populatin a User object
+	 * 
+	 * @param username
+	 * @param pref
+	 * @param ranks
+	 * @param friendsList
+	 * @param tradeRequests
+	 */
 	public User(String username, AccountPreference pref, List<Integer> ranks, List<String> friendsList, List<TradeRequest> tradeRequests) {
 		this.username = username;
 		this.accountPreference = pref;
 		this.ranks = ranks;
 		this.friendsList = friendsList;
 		this.tradeRequests = tradeRequests;
+	}
+
+	/*
+	 * DB operations
+	 */
+	/**
+	 * Create a new user within the database using this object. If two user's
+	 * with the same username are found, this will return false
+	 * 
+	 * @return boolean
+	 */
+	public boolean createNewUser() {
+		MongoTemplate operations = RepositoryFactory.getMongoOperationsInstance();
+		try {
+			log.debug("Saving new user to DB");
+			operations.save(this);
+			return true;
+		} catch (DuplicateKeyException dke) {
+			log.debug("User with same username found");
+			return false;
+		}
+	}
+
+	/**
+	 * Find the user associated with this object's username.
+	 * 
+	 * @param username
+	 * @throws IllegalArgumentException
+	 * @return User
+	 */
+	public boolean readUser() {
+		if (this.username == null)
+			throw new IllegalArgumentException("Must specify a username");
+
+		MongoTemplate operations = RepositoryFactory.getMongoOperationsInstance();
+
+		Query query = new Query(new Criteria("username").is(username));
+
+		User retUser = operations.findOne(query, User.class);
+
+		if (retUser == null)
+			return false;
+
+		this.convertUser(retUser);
+		log.debug("Successfully retrieved " + this);
+		return true;
+	}
+
+	/**
+	 * Update the current object into the database. If this object's username is
+	 * not set, IllegalArgumentException will be thrown
+	 * 
+	 * @throws IllegalArgumentException
+	 * @return boolean
+	 */
+	public boolean updateUser() {
+		if (this.username == null)
+			throw new IllegalArgumentException("The object's username field must be set");
+
+		MongoTemplate operations = RepositoryFactory.getMongoOperationsInstance();
+
+		Query query = new Query(new Criteria("username").is(this.username));
+		Update update = new Update();
+
+		update.set("accountPreference", this.accountPreference);
+		update.set("friendsList", this.friendsList);
+		update.set("ranks", this.ranks);
+		update.set("tradeRequests", this.tradeRequests);
+
+		WriteResult wr = operations.updateFirst(query, update, User.class);
+		Integer succ = (Integer) wr.getLastError().get("n");
+
+		if (succ == 1) {
+			log.debug("Updated User " + this);
+			return true;
+		} else
+			return false;
+	}
+
+	/**
+	 * Delete the user with the associated username. If username is null, the
+	 * member variable username will be used. If this is null as well, an
+	 * Illegal argument exception will be thrown
+	 * 
+	 * @param username
+	 * @throws IllegalArgumentException
+	 * @return boolean
+	 */
+	public boolean deleteUser() {
+		if (this.username == null)
+			throw new IllegalArgumentException("Must specify a username");
+
+		MongoTemplate operations = RepositoryFactory.getMongoOperationsInstance();
+
+		Query query = new Query(new Criteria("username").is(this.username));
+
+		operations.remove(query, User.class);
+
+		CommandResult cr = operations.getDb().getLastError();
+		Integer res = (Integer) cr.get("n");
+
+		if (res == 1)
+			return true;
+		else
+			return false;
+	}
+
+	/**
+	 * Helper to onvert the user object to this User Object
+	 * 
+	 * @return void
+	 */
+	private void convertUser(User user) {
+		if (user == null)
+			return;
+
+		this.id = user.getId();
+		this.username = user.getUsername();
+		this.accountPreference = user.getAccountPreference();
+		this.ranks = user.getRanks();
+		this.friendsList = user.getFriendsList();
+		this.tradeRequests = user.getTradeRequests();
 	}
 
 	/*
