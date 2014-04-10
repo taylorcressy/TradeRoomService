@@ -11,60 +11,86 @@ package database_handler.entities;
 import java.util.List;
 
 import org.springframework.data.annotation.Id;
+import org.springframework.data.mongodb.core.index.Indexed;
+import org.springframework.data.mongodb.core.mapping.Document;
 
+@Document(collection = "Users")
 public class User {
 
 	@Id
 	private String id;
+	
+	@Indexed(unique=true)
 	private String username;
 	private AccountPreference accountPreference;
 	private List<Integer> ranks;
 	private List<String> friendsList;
 	private List<TradeRequest> tradeRequests;
-	//No need to reference the Trade Room ID, will be held on it's own
-	
+
+	// No need to reference the Trade Room ID, will be held on it's own
+
+	public User(String username, AccountPreference pref, List<Integer> ranks, List<String> friendsList, List<TradeRequest> tradeRequests) {
+		this.username = username;
+		this.accountPreference = pref;
+		this.ranks = ranks;
+		this.friendsList = friendsList;
+		this.tradeRequests = tradeRequests;
+	}
+
 	/*
 	 * Getters / Setters
 	 */
 	public String getId() {
 		return id;
 	}
+
 	public void setId(String id) {
 		this.id = id;
 	}
+
 	public String getUsername() {
 		return username;
 	}
+
 	public void setUsername(String username) {
 		this.username = username;
 	}
+
 	public AccountPreference getAccountPreference() {
 		return accountPreference;
 	}
+
 	public void setAccountPreference(AccountPreference accountPreference) {
 		this.accountPreference = accountPreference;
 	}
+
 	public List<Integer> getRanks() {
 		return ranks;
 	}
+
 	public void setRanks(List<Integer> ranks) {
 		this.ranks = ranks;
 	}
+
 	public List<String> getFriendsList() {
 		return friendsList;
 	}
+
 	public void setFriendsList(List<String> friendsList) {
 		this.friendsList = friendsList;
 	}
+
 	public List<TradeRequest> getTradeRequests() {
 		return tradeRequests;
 	}
+
 	public void setTradeRequests(List<TradeRequest> tradeRequests) {
 		this.tradeRequests = tradeRequests;
 	}
-	
+
 	/*
 	 * (non-Javadoc)
+	 * 
 	 * @see java.lang.Object#hashCode()
 	 */
 	@Override
@@ -79,9 +105,10 @@ public class User {
 		result = prime * result + ((username == null) ? 0 : username.hashCode());
 		return result;
 	}
-	
+
 	/*
 	 * (non-Javadoc)
+	 * 
 	 * @see java.lang.Object#equals(java.lang.Object)
 	 */
 	@Override
@@ -125,9 +152,10 @@ public class User {
 			return false;
 		return true;
 	}
-	
+
 	/*
 	 * (non-Javadoc)
+	 * 
 	 * @see java.lang.Object#toString()
 	 */
 	@Override

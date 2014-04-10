@@ -21,7 +21,22 @@ public class AccountPreference {
 	private String defaultGeoLocation;
 	private List<Address> preferredLocations;
 	
+	/*
+	 * Constructor
+	 */
+	public  AccountPreference(String hash, String first, String last, Timestamp birth, Address add, String geoLoc, List<Address> prefLocs) {
+		this.passwordHash = hash;
+		this.firstName = first;
+		this.lastName = last;
+		this.dob = birth;
+		this.address = add;
+		this.defaultGeoLocation = geoLoc;
+		this.preferredLocations = prefLocs;
+	}
 	
+	/*
+	 * Getters / Setters
+	 */
 	public String getPasswordHash() {
 		return passwordHash;
 	}

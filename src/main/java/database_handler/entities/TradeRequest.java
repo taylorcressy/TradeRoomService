@@ -20,55 +20,83 @@ public class TradeRequest {
 	private Address preferredMeetingPlace;
 	private Timestamp dateInitiated;
 	private TradeRequestStatus status;
-	
+
+	/*
+	 * Constructor
+	 */
+	public TradeRequest(String from, String to, List<TradeItem> fromItems, List<TradeItem> toItems, Address preferredMeetingPlace,
+			Timestamp dateInit, TradeRequestStatus status) {
+		this.from = from;
+		this.to = to;
+		this.fromItems = fromItems;
+		this.toItems = toItems;
+		this.preferredMeetingPlace = preferredMeetingPlace;
+		this.dateInitiated = dateInit;
+		this.status = status;
+	}
+
 	/*
 	 * Getters / Setters
 	 */
 	public String getFrom() {
 		return from;
 	}
+
 	public void setFrom(String from) {
 		this.from = from;
 	}
+
 	public String getTo() {
 		return to;
 	}
+
 	public void setTo(String to) {
 		this.to = to;
 	}
+
 	public List<TradeItem> getFromItems() {
 		return fromItems;
 	}
+
 	public void setFromItems(List<TradeItem> fromItems) {
 		this.fromItems = fromItems;
 	}
+
 	public List<TradeItem> getToItems() {
 		return toItems;
 	}
+
 	public void setToItems(List<TradeItem> toItems) {
 		this.toItems = toItems;
 	}
+
 	public Address getPreferredMeetingPlace() {
 		return preferredMeetingPlace;
 	}
+
 	public void setPreferredMeetingPlace(Address preferredMeetingPlace) {
 		this.preferredMeetingPlace = preferredMeetingPlace;
 	}
+
 	public Timestamp getDateInitiated() {
 		return dateInitiated;
 	}
+
 	public void setDateInitiated(Timestamp dateInitiated) {
 		this.dateInitiated = dateInitiated;
 	}
+
 	public TradeRequestStatus getStatus() {
 		return status;
 	}
+
 	public void setStatus(TradeRequestStatus status) {
 		this.status = status;
 	}
-	
+
 	/*
 	 * (non-Javadoc)
+	 * 
 	 * @see java.lang.Object#hashCode()
 	 */
 	@Override
@@ -84,9 +112,10 @@ public class TradeRequest {
 		result = prime * result + ((toItems == null) ? 0 : toItems.hashCode());
 		return result;
 	}
-	
+
 	/*
 	 * (non-Javadoc)
+	 * 
 	 * @see java.lang.Object#equals(java.lang.Object)
 	 */
 	@Override
@@ -132,9 +161,10 @@ public class TradeRequest {
 			return false;
 		return true;
 	}
-	
+
 	/*
 	 * (non-Javadoc)
+	 * 
 	 * @see java.lang.Object#toString()
 	 */
 	@Override

@@ -18,6 +18,18 @@ public class Address {
 	private String geoLocation;
 	
 	/*
+	 * Constructor
+	 */
+	public Address(String streetN, String streetNum, String areaCode, String country, String city, String county, String geoLoc) {
+		this.streetName = streetN;
+		this.streetNumber = streetNum;
+		this.areaCode = areaCode;
+		this.country = country;
+		this.city = city;
+		this.geoLocation = geoLoc;
+	}
+	
+	/*
 	 * Getters and Setters
 	 */
 	public String getStreetName() {
