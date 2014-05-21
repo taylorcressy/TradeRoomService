@@ -1,0 +1,69 @@
+100, Registration Successful
+101, Registration Failed: Duplicate Email
+102, Registration Failed: Duplicate Username
+103, Registration Failed: Invalid Form
+110, Login Successful
+111, Invalid Username/Password Combination
+112, Invalid Email/Password Combination
+120, Logout Successful
+121, Logout Failed: No Session Currently Active
+122, Logout Failed
+130, Update Preferences Success
+131, Update Preferences Failed: Date Format Error (Should be: ('dd-MM-yyyy')
+132, Update Preferences Failed: Invalid Form
+140, Update Address Success
+141, Update Address Failed: Invalid Form
+142, Update Address Failed: Invalid Address
+150, Update Current GeoLocation Success
+151, Update Current GeoLocation Failed
+160, Retrieved Friends Success
+161, Retrieved Friends Failed: No Friends
+170, Friend Request Successfully Sent
+171, Friend Request Failed: No User
+172, Friend Request Failed: Friend Exists
+173, Friend Request Failed: Friend Blocked
+174, Friend Request Failed: Friend Pending
+175, Friend Request Response Success
+176, Friend Request Response Failed: No Request
+177, Friend Request Response Failed: Same Action Already Committed
+178, Friend Request Response Failed: Not A Valid Response
+200, Trade Item Creation Success
+201, Trade Item Creation Failed: Invalid Form
+202, Trade Item Creation Failed: Null Values
+203, Trade Item Creation Failed: Max Limit Reached
+210, Image Save Success
+211, Image Save Failed: Item Does Not Exist
+212, Image Save Failed: Item Does Not Belong To User
+213, Image Save Failed: Too Many Images
+220, Received Trade Item Images Success
+221, Received Trade Item Images Failed: Incorrect ItemId
+222, Received Trade Item Images Failed: No Images For Item
+230, Deleted Trade Item Image Success
+231, Deleted Trade Item Image Failed: No Item Found
+232, Deleted Trade Item Image Failed: No Image Found
+233, Deleted Trade Item Image Failed: Item Does Not Belong To User
+240, Retrieve All Trade Items Success
+241, Retrieve All Trade Items Failed: No Items Found
+250, Update Item Success
+251, Update Item Failed: No Item
+252, Update Item Failed: Item Does Not Belong To User
+253, Update Item Failed: Invalid Form
+260, Delete Item Success
+261, Delete Item Failed: No Item
+262, Delete Item Failed: Item Does Not Belong To User
+270, Update Email Success
+271, Update Email Failed: Invalid Email Syntax
+272, Update Email Failed: Duplicate Email
+280, Retrieve Trade Room Meta Success
+281, Retrieve Trade Room Meta Failed: No User
+282, Retrieve Trade Room Meta Failed: Permission Failure
+290, Send Trade Request Success
+291, Send Trade Request Failed: No User
+292, Send Trade Request Failed: Invalid Items
+293, Send Trade Request Failed: Invalid Trade Method (Must be "DROP_OFF", "PICK_UP", "EXCHANGE_CONTACT", "MUTUAL_MEETING")
+294, Send Trade Request Failed: User Has No Trade Items To Trade
+900, Failed To Set Session Error
+901, No Session For Request
+902, JSON parse error
+998, Database Error
+999, Unknown Server Error

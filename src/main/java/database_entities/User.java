@@ -8,39 +8,37 @@
  */
 package database_entities;
 
+import java.util.Date;
 import java.util.List;
 
-import javax.persistence.Transient;
-
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-import org.springframework.dao.DuplicateKeyException;
 import org.springframework.data.annotation.Id;
-import org.springframework.data.mongodb.core.MongoTemplate;
 import org.springframework.data.mongodb.core.index.Indexed;
 import org.springframework.data.mongodb.core.mapping.Document;
-import org.springframework.data.mongodb.core.query.Criteria;
-import org.springframework.data.mongodb.core.query.Query;
-import org.springframework.data.mongodb.core.query.Update;
-
-import com.mongodb.CommandResult;
-import com.mongodb.WriteResult;
+import org.springframework.format.annotation.DateTimeFormat;
 
 @Document
 public class User {
-
-	@Transient
-	transient private static Logger log = LoggerFactory.getLogger("database-logger");
 
 	@Id
 	private String id;
 
 	@Indexed(unique = true)
 	private String username;
+	@Indexed(unique = true)
+	private String email;
+
+	@DateTimeFormat(pattern="dd-MM-yyyy")
+	private Date dateJoined;
+	@DateTimeFormat(pattern="dd-MM-yyyy")
+	private Date lastLogin;
+	
 	private AccountPreference accountPreference;
-	private List<Integer> ranks;
-	private List<String> friendsList;
+	private TradeRoomMeta tradeRoomMeta;
+	private List<Rank> ranks;
+	private List<FriendRequest> friendRequests;
 	private List<TradeRequest> tradeRequests;
+	
+	private UserRole role;
 
 	public User() {
 		// Empty constructor
@@ -62,136 +60,19 @@ public class User {
 	 * @param pref
 	 * @param ranks
 	 * @param friendsList
+	 * @param friendRequests
 	 * @param tradeRequests
 	 */
-	public User(String username, AccountPreference pref, List<Integer> ranks, List<String> friendsList, List<TradeRequest> tradeRequests) {
+	public User(String username, String email, AccountPreference pref, TradeRoomMeta tradeRoomMeta, List<Rank> ranks,
+			List<FriendRequest> friendRequests, List<TradeRequest> tradeRequests, Date dateJoined) {
 		this.username = username;
+		this.email = email;
 		this.accountPreference = pref;
 		this.ranks = ranks;
-		this.friendsList = friendsList;
+		this.tradeRoomMeta = tradeRoomMeta;
+		this.friendRequests = friendRequests;
 		this.tradeRequests = tradeRequests;
-	}
-
-	/*
-	 * DB operations
-	 */
-	/**
-	 * Create a new user within the database using this object. If two user's
-	 * with the same username are found, this will return false
-	 * 
-	 * @return boolean
-	 */
-	public boolean createNewUser() {
-		MongoTemplate operations = RepositoryFactory.getMongoOperationsInstance();
-		try {
-			log.debug("Saving new user to DB");
-			operations.save(this);
-			return true;
-		} catch (DuplicateKeyException dke) {
-			log.debug("User with same username found");
-			return false;
-		}
-	}
-
-	/**
-	 * Find the user associated with this object's username.
-	 * 
-	 * @param username
-	 * @throws IllegalArgumentException
-	 * @return User
-	 */
-	public boolean readUser() {
-		if (this.username == null)
-			throw new IllegalArgumentException("Must specify a username");
-
-		MongoTemplate operations = RepositoryFactory.getMongoOperationsInstance();
-
-		Query query = new Query(new Criteria("username").is(username));
-
-		User retUser = operations.findOne(query, User.class);
-
-		if (retUser == null)
-			return false;
-
-		this.convertUser(retUser);
-		log.debug("Successfully retrieved " + this);
-		return true;
-	}
-
-	/**
-	 * Update the current object into the database. If this object's username is
-	 * not set, IllegalArgumentException will be thrown
-	 * 
-	 * @throws IllegalArgumentException
-	 * @return boolean
-	 */
-	public boolean updateUser() {
-		if (this.username == null)
-			throw new IllegalArgumentException("The object's username field must be set");
-
-		MongoTemplate operations = RepositoryFactory.getMongoOperationsInstance();
-
-		Query query = new Query(new Criteria("username").is(this.username));
-		Update update = new Update();
-
-		update.set("accountPreference", this.accountPreference);
-		update.set("friendsList", this.friendsList);
-		update.set("ranks", this.ranks);
-		update.set("tradeRequests", this.tradeRequests);
-
-		WriteResult wr = operations.updateFirst(query, update, User.class);
-		Integer succ = (Integer) wr.getLastError().get("n");
-
-		if (succ == 1) {
-			log.debug("Updated User " + this);
-			return true;
-		} else
-			return false;
-	}
-
-	/**
-	 * Delete the user with the associated username. If username is null, the
-	 * member variable username will be used. If this is null as well, an
-	 * Illegal argument exception will be thrown
-	 * 
-	 * @param username
-	 * @throws IllegalArgumentException
-	 * @return boolean
-	 */
-	public boolean deleteUser() {
-		if (this.username == null)
-			throw new IllegalArgumentException("Must specify a username");
-
-		MongoTemplate operations = RepositoryFactory.getMongoOperationsInstance();
-
-		Query query = new Query(new Criteria("username").is(this.username));
-
-		operations.remove(query, User.class);
-
-		CommandResult cr = operations.getDb().getLastError();
-		Integer res = (Integer) cr.get("n");
-
-		if (res == 1)
-			return true;
-		else
-			return false;
-	}
-
-	/**
-	 * Helper to onvert the user object to this User Object
-	 * 
-	 * @return void
-	 */
-	private void convertUser(User user) {
-		if (user == null)
-			return;
-
-		this.id = user.getId();
-		this.username = user.getUsername();
-		this.accountPreference = user.getAccountPreference();
-		this.ranks = user.getRanks();
-		this.friendsList = user.getFriendsList();
-		this.tradeRequests = user.getTradeRequests();
+		this.dateJoined = dateJoined;
 	}
 
 	/*
@@ -213,6 +94,14 @@ public class User {
 		this.username = username;
 	}
 
+	public String getEmail() {
+		return email;
+	}
+
+	public void setEmail(String email) {
+		this.email = email;
+	}
+
 	public AccountPreference getAccountPreference() {
 		return accountPreference;
 	}
@@ -221,20 +110,12 @@ public class User {
 		this.accountPreference = accountPreference;
 	}
 
-	public List<Integer> getRanks() {
+	public List<Rank> getRanks() {
 		return ranks;
 	}
 
-	public void setRanks(List<Integer> ranks) {
+	public void setRanks(List<Rank> ranks) {
 		this.ranks = ranks;
-	}
-
-	public List<String> getFriendsList() {
-		return friendsList;
-	}
-
-	public void setFriendsList(List<String> friendsList) {
-		this.friendsList = friendsList;
 	}
 
 	public List<TradeRequest> getTradeRequests() {
@@ -245,29 +126,70 @@ public class User {
 		this.tradeRequests = tradeRequests;
 	}
 
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see java.lang.Object#hashCode()
-	 */
+	public List<FriendRequest> getFriendRequests() {
+		return friendRequests;
+	}
+
+	public void setFriendRequests(List<FriendRequest> friendRequests) {
+		this.friendRequests = friendRequests;
+	}
+	
+	public Date getDateJoined() {
+		return dateJoined;
+	}
+
+	public void setDateJoined(Date dateJoined) {
+		this.dateJoined = dateJoined;
+	}
+
+	public Date getLastLogin() {
+		return lastLogin;
+	}
+
+	public void setLastLogin(Date lastLogin) {
+		this.lastLogin = lastLogin;
+	}
+
+	public TradeRoomMeta getTradeRoomMeta() {
+		return tradeRoomMeta;
+	}
+
+	public void setTradeRoomMeta(TradeRoomMeta tradeRoomMeta) {
+		this.tradeRoomMeta = tradeRoomMeta;
+	}
+	
+	public UserRole getRole() {
+		return this.role;
+	}
+	
+	public void setRole(UserRole userRole) {
+		this.role = userRole;
+	}
+
 	@Override
 	public int hashCode() {
 		final int prime = 31;
 		int result = 1;
-		result = prime * result + ((accountPreference == null) ? 0 : accountPreference.hashCode());
-		result = prime * result + ((friendsList == null) ? 0 : friendsList.hashCode());
+		result = prime
+				* result
+				+ ((accountPreference == null) ? 0 : accountPreference
+						.hashCode());
+		result = prime * result
+				+ ((dateJoined == null) ? 0 : dateJoined.hashCode());
+		result = prime * result + ((email == null) ? 0 : email.hashCode());
+		result = prime * result
+				+ ((friendRequests == null) ? 0 : friendRequests.hashCode());
 		result = prime * result + ((id == null) ? 0 : id.hashCode());
 		result = prime * result + ((ranks == null) ? 0 : ranks.hashCode());
-		result = prime * result + ((tradeRequests == null) ? 0 : tradeRequests.hashCode());
-		result = prime * result + ((username == null) ? 0 : username.hashCode());
+		result = prime * result
+				+ ((tradeRequests == null) ? 0 : tradeRequests.hashCode());
+		result = prime * result
+				+ ((tradeRoomMeta == null) ? 0 : tradeRoomMeta.hashCode());
+		result = prime * result
+				+ ((username == null) ? 0 : username.hashCode());
 		return result;
 	}
 
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see java.lang.Object#equals(java.lang.Object)
-	 */
 	@Override
 	public boolean equals(Object obj) {
 		if (this == obj)
@@ -282,10 +204,20 @@ public class User {
 				return false;
 		} else if (!accountPreference.equals(other.accountPreference))
 			return false;
-		if (friendsList == null) {
-			if (other.friendsList != null)
+		if (dateJoined == null) {
+			if (other.dateJoined != null)
 				return false;
-		} else if (!friendsList.equals(other.friendsList))
+		} else if (!dateJoined.equals(other.dateJoined))
+			return false;
+		if (email == null) {
+			if (other.email != null)
+				return false;
+		} else if (!email.equals(other.email))
+			return false;
+		if (friendRequests == null) {
+			if (other.friendRequests != null)
+				return false;
+		} else if (!friendRequests.equals(other.friendRequests))
 			return false;
 		if (id == null) {
 			if (other.id != null)
@@ -302,6 +234,11 @@ public class User {
 				return false;
 		} else if (!tradeRequests.equals(other.tradeRequests))
 			return false;
+		if (tradeRoomMeta == null) {
+			if (other.tradeRoomMeta != null)
+				return false;
+		} else if (!tradeRoomMeta.equals(other.tradeRoomMeta))
+			return false;
 		if (username == null) {
 			if (other.username != null)
 				return false;
@@ -310,14 +247,28 @@ public class User {
 		return true;
 	}
 
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see java.lang.Object#toString()
-	 */
 	@Override
 	public String toString() {
-		return "User [id=" + id + ", username=" + username + ", accountPreference=" + accountPreference + ", ranks=" + ranks + ", friendsList="
-				+ friendsList + ", tradeRequests=" + tradeRequests + "]";
+		return "User [id=" + id + ", username=" + username + ", email=" + email
+				+ ", dateJoined=" + dateJoined + ", lastLogin=" + lastLogin
+				+ ", accountPreference=" + accountPreference
+				+ ", tradeRoomMeta=" + tradeRoomMeta + ", ranks=" + ranks
+				+ ", friendRequests=" + friendRequests + ", tradeRequests="
+				+ tradeRequests + "]";
+	}
+	
+	public enum UserRole {
+		USER(0),
+		ADMIN(1),
+		ROOT(10);
+		
+		private int value;
+		private UserRole(int val) {
+			this.value = val;
+		}
+		
+		public int getValue() {
+			return this.value;
+		}
 	}
 }

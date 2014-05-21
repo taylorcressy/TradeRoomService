@@ -26,14 +26,31 @@
 	
 	
 	<appender name="database-file" class="ch.qos.logback.core.FileAppender">
-		<file>logs/main/database-tester.log</file>
+		<file>logs/main/database.log</file>
 		<append>false</append>
 		<encoder>
 			<pattern>%-5level %logger{0} - %msg%n</pattern>
 		</encoder>
 	</appender>
+	
+	<appender name="service-file" class="ch.qos.logback.core.FileAppender">
+		<file>>logs/main/service.log</file>
+		<append>false</append>
+		<encoder>
+			<pattern>%-5level %logger{0} - %msg%n</pattern>
+		</encoder>
+	</appender>
+	
 	<appender name="database-tester-file" class="ch.qos.logback.core.FileAppender">
 		<file>logs/tests/database-tester.log</file>
+		<append>false</append>
+		<encoder>
+			<pattern>%-5level %logger{0} - %msg%n</pattern>
+		</encoder>
+	</appender>
+	
+	<appender name="service-tester-file" class="ch.qos.logback.core.FileAppender">
+		<file>logs/tests/service-tester.log</file>
 		<append>false</append>
 		<encoder>
 			<pattern>%-5level %logger{0} - %msg%n</pattern>
@@ -49,8 +66,20 @@
 		<appender-ref ref="database-tester-file" />
 	</logger>
 	
+	<logger name="service-logger" level="ALL">
+		<appender-ref ref="service-file" />
+	</logger>
 
-	<root level="ALL">
+	<logger name="service-test-logger" level="ALL">
+		<appender-ref ref="console" />
+		<appender-ref ref="service-tester-file" />
+	</logger>
+	
+	<logger name="ServiceLoaderDiscovery" level="ALL" />
+	<logger name="PluginManager" level="ALL" />
+	
+	<root level="INFO">
 		<appender-ref ref="spring-file" />
+		<appender-ref ref="console" />
 	</root>
 </configuration>

@@ -17,6 +17,14 @@ public class Address {
 	private String county;
 	private String geoLocation;
 	
+	
+	/*
+	 * Empty constructor
+	 */
+	public Address() {
+		//No implementation
+	}
+	
 	/*
 	 * Constructor
 	 */
@@ -25,6 +33,7 @@ public class Address {
 		this.streetNumber = streetNumber;
 		this.areaCode = areaCode;
 		this.country = country;
+		this.county = county;
 		this.city = city;
 		this.geoLocation = geoLocation;
 	}

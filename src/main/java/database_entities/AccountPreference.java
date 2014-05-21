@@ -9,29 +9,38 @@
  */
 package database_entities;
 
-import java.sql.Timestamp;
+import java.util.Date;
 import java.util.List;
 
+import org.springframework.format.annotation.DateTimeFormat;
+
 public class AccountPreference {
+	
 	transient private String passwordHash; // Stop from sending over wire
 	private String firstName;
 	private String lastName;
-	private String dob; // Date of birth
+	
+	@DateTimeFormat(pattern="dd-MM-yyyy")
+	private Date dob; // Date of birth
+	
 	private Address address;
-	private String defaultGeoLocation;
+	transient private String currentGeoLocation;
 	private List<Address> preferredLocations;
 
+	public AccountPreference() {
+	}
+	
 	/*
 	 * Constructor
 	 */
-	public AccountPreference(String passwordHash, String firstName, String lastName, String dob, Address address, String defaultGeoLocation,
+	public AccountPreference(String passwordHash, String firstName, String lastName, Date dob, Address address, String currentGeoLocation,
 			List<Address> preferredLocations) {
 		this.passwordHash = passwordHash;
 		this.firstName = firstName;
 		this.lastName = lastName;
 		this.dob = dob;
 		this.address = address;
-		this.defaultGeoLocation = defaultGeoLocation;
+		this.currentGeoLocation = currentGeoLocation;
 		this.preferredLocations = preferredLocations;
 	}
 
@@ -62,11 +71,11 @@ public class AccountPreference {
 		this.lastName = lastName;
 	}
 
-	public String getDob() {
+	public Date getDob() {
 		return dob;
 	}
 
-	public void setDob(String dob) {
+	public void setDob(Date dob) {
 		this.dob = dob;
 	}
 
@@ -78,12 +87,12 @@ public class AccountPreference {
 		this.address = address;
 	}
 
-	public String getDefaultLocation() {
-		return defaultGeoLocation;
+	public String getCurrentGeoLocation() {
+		return currentGeoLocation;
 	}
 
-	public void setDefaultLocation(String defaultLocation) {
-		this.defaultGeoLocation = defaultLocation;
+	public void setCurrentGeoLocation(String defaultLocation) {
+		this.currentGeoLocation = defaultLocation;
 	}
 
 	public List<Address> getPreferredLocations() {
@@ -104,7 +113,7 @@ public class AccountPreference {
 		final int prime = 31;
 		int result = 1;
 		result = prime * result + ((address == null) ? 0 : address.hashCode());
-		result = prime * result + ((defaultGeoLocation == null) ? 0 : defaultGeoLocation.hashCode());
+		result = prime * result + ((currentGeoLocation == null) ? 0 : currentGeoLocation.hashCode());
 		result = prime * result + ((dob == null) ? 0 : dob.hashCode());
 		result = prime * result + ((firstName == null) ? 0 : firstName.hashCode());
 		result = prime * result + ((lastName == null) ? 0 : lastName.hashCode());
@@ -131,10 +140,10 @@ public class AccountPreference {
 				return false;
 		} else if (!address.equals(other.address))
 			return false;
-		if (defaultGeoLocation == null) {
-			if (other.defaultGeoLocation != null)
+		if (currentGeoLocation == null) {
+			if (other.currentGeoLocation != null)
 				return false;
-		} else if (!defaultGeoLocation.equals(other.defaultGeoLocation))
+		} else if (!currentGeoLocation.equals(other.currentGeoLocation))
 			return false;
 		if (dob == null) {
 			if (other.dob != null)
@@ -167,7 +176,7 @@ public class AccountPreference {
 	@Override
 	public String toString() {
 		return "AccountPreference [firstName=" + firstName + ", lastName=" + lastName + ", dob=" + dob + ", address=" + address
-				+ ", defaultGeoLocation=" + defaultGeoLocation + ", preferredLocations=" + preferredLocations + "]";
+				+ ", defaultGeoLocation=" + currentGeoLocation + ", preferredLocations=" + preferredLocations + "]";
 	}
 
 }

@@ -8,23 +8,96 @@
  */
 package database_entities;
 
-import java.sql.Timestamp;
 import java.util.List;
 
 import org.springframework.data.annotation.Id;
+import org.springframework.data.mongodb.core.mapping.Document;
 
+@Document
 public class TradeItem {
+	/**
+	 * Inner class - specifies the item condition of a trade item
+	 */
+	public enum ItemCondition {
+		NEW(0), 
+		LIKE_NEW(1), 
+		REFURBISHED(2), 
+		USED(3), 
+		GOOD(4), 
+		FAIR(5), 
+		ACCEPTABLE(6), 
+		POOR(7);
+		
+		private int value;
+		
+		private ItemCondition(int val) {
+			this.value = val;
+		}
+		
+		public int getValue() {
+			return this.value;
+		}
+	}
+	
 
 	@Id
 	private String id;
 	private String name;
 	private String description;
-	private String geoLocation;
 	private List<String> tags;
+	private List<String> imageIds;
 	private int count;
 	private ItemCondition condition;
-	private Timestamp dateAdded;
+	private String dateAdded;
 	private String ownerId;
+
+	public TradeItem(String name, String description, List<String> tags, List<String> imageIds, int count, ItemCondition condition, String dateAdded,
+			String ownerId) {
+		this.name = name;
+		this.description = description;
+		this.condition = condition;
+		this.tags = tags;
+		this.imageIds = imageIds;
+		this.count = count;
+		this.dateAdded = dateAdded;
+		this.ownerId = ownerId;
+	}
+
+	
+	/*
+	 * Database Operations
+	 */
+	/**
+	 * Create a new Trade Item 
+	 * @return boolean
+	 */
+	public boolean createNewItem() {
+		return true;
+	}
+	
+	/**
+	 * Read a trade item from the database
+	 * @return boolean
+	 */
+	public boolean readItem() {
+		return true;
+	}
+	
+	/**
+	 * Update a trade item in the databse
+	 * @return boolean
+	 */
+	public boolean updateItem() {
+		return true;
+	}
+	
+	/**
+	 * Delete a trade item from the database
+	 * @return
+	 */
+	public boolean deleteItem() {
+		return true;
+	}
 	
 	/*
 	 * Getters/Setters
@@ -32,60 +105,78 @@ public class TradeItem {
 	public String getId() {
 		return id;
 	}
+
 	public void setId(String id) {
 		this.id = id;
 	}
+
 	public String getName() {
 		return name;
 	}
+
 	public void setName(String name) {
 		this.name = name;
 	}
+
 	public String getDescription() {
 		return description;
 	}
+
 	public void setDescription(String description) {
 		this.description = description;
 	}
-	public String getGeoLocation() {
-		return geoLocation;
-	}
-	public void setGeoLocation(String geoLocation) {
-		this.geoLocation = geoLocation;
-	}
+
 	public List<String> getTags() {
 		return tags;
 	}
+
 	public void setTags(List<String> tags) {
 		this.tags = tags;
 	}
+	
+	public List<String> getImageIds() {
+		return this.imageIds;
+	}
+	
+	public void setImageIds(List<String> imageIds) {
+		this.imageIds = imageIds;
+	}
+
 	public int getCount() {
 		return count;
 	}
+
 	public void setCount(int count) {
 		this.count = count;
 	}
+
 	public ItemCondition getCondition() {
 		return condition;
 	}
+
 	public void setCondition(ItemCondition condition) {
 		this.condition = condition;
 	}
-	public Timestamp getDateAdded() {
+
+	public String getDateAdded() {
 		return dateAdded;
 	}
-	public void setDateAdded(Timestamp dateAdded) {
+
+	public void setDateAdded(String dateAdded) {
 		this.dateAdded = dateAdded;
 	}
+
 	public String getOwnerId() {
 		return ownerId;
 	}
+
 	public void setOwnerId(String ownerId) {
 		this.ownerId = ownerId;
 	}
-	
+
 	/**
 	 * hashCode method
+	 * 
 	 * @return int
 	 */
 	@Override
@@ -96,16 +187,16 @@ public class TradeItem {
 		result = prime * result + count;
 		result = prime * result + ((dateAdded == null) ? 0 : dateAdded.hashCode());
 		result = prime * result + ((description == null) ? 0 : description.hashCode());
-		result = prime * result + ((geoLocation == null) ? 0 : geoLocation.hashCode());
 		result = prime * result + ((id == null) ? 0 : id.hashCode());
 		result = prime * result + ((name == null) ? 0 : name.hashCode());
 		result = prime * result + ((ownerId == null) ? 0 : ownerId.hashCode());
 		result = prime * result + ((tags == null) ? 0 : tags.hashCode());
 		return result;
 	}
-	
+
 	/**
 	 * equals method
+	 * 
 	 * @return boolean
 	 */
 	@Override
@@ -131,11 +222,6 @@ public class TradeItem {
 				return false;
 		} else if (!description.equals(other.description))
 			return false;
-		if (geoLocation == null) {
-			if (other.geoLocation != null)
-				return false;
-		} else if (!geoLocation.equals(other.geoLocation))
-			return false;
 		if (id == null) {
 			if (other.id != null)
 				return false;
@@ -158,7 +244,7 @@ public class TradeItem {
 			return false;
 		return true;
 	}
-	
+
 	/**
 	 * toString method
 	 * 
@@ -166,7 +252,7 @@ public class TradeItem {
 	 */
 	@Override
 	public String toString() {
-		return "TradeItem [id=" + id + ", name=" + name + ", description=" + description + ", geoLocation=" + geoLocation + ", tags=" + tags
+		return "TradeItem [id=" + id + ", name=" + name + ", description=" + description + ", tags=" + tags
 				+ ", count=" + count + ", condition=" + condition + ", dateAdded=" + dateAdded + ", ownerId=" + ownerId + "]";
 	}
 }
