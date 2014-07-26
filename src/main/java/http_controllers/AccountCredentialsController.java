@@ -33,6 +33,19 @@ public class AccountCredentialsController {
 		this.gson = new GsonBuilder().setDateFormat("MMM dd, yyyy").create();
 	}
 	
+	@RequestMapping(value="/getAccountDetails", method=RequestMethod.GET) 
+	public @ResponseBody
+	ServerMessage getAccountDetailsOfLoggedInUser(HttpServletRequest request) {
+		User user = SessionHandler.getUserForSession(request);
+		
+		if(user == null) {
+			return accountService.getMessagingService().getMessageForCode(StatusMessagesAndCodesService.SESSION_NON_EXISTENT);
+		}
+		else {
+			return accountService.getMessagingService().getMessageWithData(StatusMessagesAndCodesService.GET_REQUEST_SUCCESS, this.gson.toJson(user));
+		}
+	}
+	
 	@RequestMapping(value="/register", method=RequestMethod.POST)
 	public @ResponseBody 
 	ServerMessage createAccountForUser(
@@ -172,7 +185,9 @@ public class AccountCredentialsController {
 	@RequestMapping(value="/updateCurrentLocation", method=RequestMethod.POST)
 	public @ResponseBody
 	ServerMessage updateCurrentLocation(
-		@RequestParam(required=true, value="geoLocation") String geoLocation,
+		@RequestParam(required=true, value="city") String city,
+		@RequestParam(required=true, value="longitude") double longitude,
+		@RequestParam(required=true, value="latitude") double latitude,
 		HttpServletRequest request
 			) {
 		
@@ -181,6 +196,6 @@ public class AccountCredentialsController {
 		if(user == null)
 			return accountService.getMessagingService().getMessageForCode(StatusMessagesAndCodesService.SESSION_NON_EXISTENT);
 		
-		return accountService.updateUserCurrentLocation(user, geoLocation);
+		return accountService.updateUserCurrentLocation(user, city, longitude, latitude);
 	}
 }

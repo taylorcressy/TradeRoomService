@@ -37,6 +37,17 @@ public class TradeItem {
 		public int getValue() {
 			return this.value;
 		}
+		
+		public static String[] names() {
+		    ItemCondition[] conditions = values();
+		    String[] names = new String[conditions.length];
+
+		    for (int i = 0; i < conditions.length; i++) {
+		        names[i] = conditions[i].name();
+		    }
+
+		    return names;
+		}
 	}
 	
 

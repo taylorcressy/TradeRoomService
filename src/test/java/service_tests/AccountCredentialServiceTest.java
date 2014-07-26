@@ -70,7 +70,7 @@ public class AccountCredentialServiceTest {
 	@Test
 	public void updateCurrentLocation() {
 		setup();
-		ServerMessage message = service.updateUserCurrentLocation(this.helperUser, "Current Location");
+		ServerMessage message = service.updateUserCurrentLocation(this.helperUser, "Current Location", 12345, 12345);
 		assertNotNull(message);
 		log.debug("Retrieved Message: " + message);
 	}

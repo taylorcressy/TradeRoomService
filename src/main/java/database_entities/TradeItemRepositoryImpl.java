@@ -63,6 +63,9 @@ public class TradeItemRepositoryImpl implements TradeItemRepositoryExt {
 	public byte[] getTradeItemImage(String imageId) {
 		//First get the gridFS file handle
 		GridFSDBFile gridFile = gridOperations.find(new ObjectId(imageId));
+		if(gridFile == null || gridFile.getInputStream() == null) {
+			return null;
+		}
 		
 		try {			
 			return IOUtils.toByteArray(gridFile.getInputStream());
@@ -81,7 +84,7 @@ public class TradeItemRepositoryImpl implements TradeItemRepositoryExt {
 	 */
 	@Override
 	public boolean deleteTradeItemImage(String imageId) {
-		gridOperations.remove(imageId);
+		gridOperations.remove(new ObjectId(imageId));
 		Integer deleted = gridOperations.getDB().getLastError().getInt("n");
 		
 		if(deleted == 1)

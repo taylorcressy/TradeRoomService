@@ -32,6 +32,7 @@ import server_utilities.DefaultProperties;
 import server_utilities.JavaHasher;
 import database_entities.AccountPreference;
 import database_entities.Address;
+import database_entities.GeoLocation;
 import database_entities.TradeItem;
 import database_entities.TradeRoomMeta;
 import database_entities.User;
@@ -88,7 +89,6 @@ public class AccountCredentialService {
 			throws StatusMessageDoesNotExist {
 
 		HashMap<String, String> invalidFormMap = new HashMap<String, String>();
-		
 		if (username.trim().length() < MIN_NAME_LENGTH || username.trim().length() > MAX_NAME_PASS_LENGTH) {
 			invalidFormMap.put("invalidEntry", "username");
 			invalidFormMap.put("reason", "length");
@@ -306,9 +306,10 @@ public class AccountCredentialService {
 		AccountPreference pref = new AccountPreference(hash, firstName.trim(), lastName.trim(), date, null, null, null);
 		
 		//Request the update from the repository
-		boolean success = repo.updateAccountPreferences(user, pref);
+		user.setAccountPreference(pref);
+		user = repo.save(user);
 		
-		if(!success)
+		if(user == null)
 			return messageService.getMessageForCode(StatusMessagesAndCodesService.DATABASE_ERROR);
 		
 		return messageService.getMessageWithData(StatusMessagesAndCodesService.UPDATE_PREF_SUCCESS, this.gson.toJson(user));
@@ -350,7 +351,9 @@ public class AccountCredentialService {
 
 		Address address = new Address(streetName, streetNumber, areaCode, country, city, county, geoLocation);
 		
-		if(repo.updateAddress(user, address))
+		user.getAccountPreference().setAddress(address);
+		
+		if(repo.save(user) != null)
 			return messageService.getMessageWithData(StatusMessagesAndCodesService.UPDATE_ADDR_SUCCESS, this.gson.toJson(user));
 		else
 			return messageService.getMessageForCode(StatusMessagesAndCodesService.DATABASE_ERROR);
@@ -361,11 +364,14 @@ public class AccountCredentialService {
 	 * 
 	 * @param currentGeoLocation
 	 */
-	public ServerMessage updateUserCurrentLocation(User user, String geoLocation) {
-			
-		boolean success = repo.updateCurrentGeoLocation(user, geoLocation);
+	public ServerMessage updateUserCurrentLocation(User user, String city, double longitude, double latitude) {
 		
-		if(success)
+		user.getAccountPreference().setCurrentGeoLocation(new GeoLocation(longitude, latitude));
+		user.getAccountPreference().setCity(city);
+		
+		user = repo.save(user);
+		
+		if(user != null)
 			return messageService.getMessageWithData(StatusMessagesAndCodesService.UPDATE_CURRENT_LOC_SUCCESS, this.gson.toJson(user));
 		else
 			return messageService.getMessageForCode(StatusMessagesAndCodesService.UPDATE_CURRENT_LOC_FAILED);
@@ -394,6 +400,7 @@ public class AccountCredentialService {
 			user.getTradeRoomMeta().setItemIds(new ArrayList<String>());
 		
 		user.getTradeRoomMeta().getItemIds().add(item.getId());
+		user.getTradeRoomMeta().setNumberOfItems(user.getTradeRoomMeta().getNumberOfItems() + 1);
 		
 		User returnedUser = repo.save(user);
 		
@@ -401,6 +408,30 @@ public class AccountCredentialService {
 			return true;
 		else return false;
 	}
+	
+	/**
+	 * Remove item reference from the User Object
+	 * 
+	 * @param User
+	 * @param Trade Item Id
+	 * @return boolean
+	 */
+	 public boolean removeTradeItemFromUser(User user, String itemId) {
+		 if(itemId == null || user == null)
+			 throw new IllegalArgumentException("Null Values");
+		 
+		 if(user.getTradeRoomMeta().getItemIds() == null)
+			 return false;
+		 
+		 user.getTradeRoomMeta().getItemIds().remove(itemId);
+		 user.getTradeRoomMeta().setNumberOfItems(user.getTradeRoomMeta().getNumberOfItems() - 1);
+		 
+		 User returnedUser = repo.save(user);
+		 
+		 if(returnedUser != null)
+		 	return true;
+		 else return false;
+	 }
 	
 	
 

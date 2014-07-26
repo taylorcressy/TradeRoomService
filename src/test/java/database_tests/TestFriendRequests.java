@@ -50,11 +50,8 @@ public class TestFriendRequests {
 	}
 	
 	private void deleteHelperUsers() {
-		boolean helper = userRepo.deleteUserByUsername(this.helperUser.getUsername());
-		boolean recip = userRepo.deleteUserByUsername(this.recipUser.getUsername());
-		
-		if(!helper || !recip)
-			log.debug("failed to delete!");
+		userRepo.delete(this.helperUser);
+		userRepo.delete(this.recipUser);
 	}
 	
 	@Test
@@ -77,11 +74,11 @@ public class TestFriendRequests {
 		deleteHelperUsers();
 		
 		testSendingFriendRequest();
-		boolean success = userRepo.acceptFriendRequest(this.recipUser, this.helperUser.getUsername());
+		boolean success = userRepo.acceptFriendRequest(this.recipUser, this.helperUser.getId());
 		assertTrue(success);
 		int index = -1;
 		for(int i=0; i < recipUser.getFriendRequests().size(); i++) {
-			if(recipUser.getFriendRequests().get(i).getSenderUsername().compareToIgnoreCase(this.helperUser.getUsername()) == 0)
+			if(recipUser.getFriendRequests().get(i).getSenderId().compareToIgnoreCase(this.helperUser.getId()) == 0)
 				index = i;
 		}
 		assertFalse(index == -1);
@@ -95,11 +92,11 @@ public class TestFriendRequests {
 		deleteHelperUsers();
 		
 		testSendingFriendRequest();
-		boolean success = userRepo.denyFriendRequest(this.recipUser, this.helperUser.getUsername());
+		boolean success = userRepo.denyFriendRequest(this.recipUser, this.helperUser.getId());
 		assertTrue(success);
 		int index = -1;
 		for(int i=0; i < recipUser.getFriendRequests().size(); i++) {
-			if(recipUser.getFriendRequests().get(i).getSenderUsername().compareToIgnoreCase(this.helperUser.getUsername()) == 0)
+			if(recipUser.getFriendRequests().get(i).getSenderId().compareToIgnoreCase(this.helperUser.getId()) == 0)
 				index = i;
 		}
 		assertFalse(index == -1);
@@ -118,7 +115,7 @@ public class TestFriendRequests {
 		int index = -1;
 		for(int i=0; i < recipUser.getFriendRequests().size(); i++) {
 			if(recipUser.getFriendRequests().get(i) != null) {
-				if(recipUser.getFriendRequests().get(i).getSenderUsername().compareToIgnoreCase(this.helperUser.getUsername()) == 0)
+				if(recipUser.getFriendRequests().get(i).getSenderId().compareToIgnoreCase(this.helperUser.getId()) == 0)
 					index = i;
 			}
 		}

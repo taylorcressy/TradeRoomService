@@ -62,6 +62,8 @@
 292, Send Trade Request Failed: Invalid Items
 293, Send Trade Request Failed: Invalid Trade Method (Must be "DROP_OFF", "PICK_UP", "EXCHANGE_CONTACT", "MUTUAL_MEETING")
 294, Send Trade Request Failed: User Has No Trade Items To Trade
+800, GET request successful
+801, GET request failed
 900, Failed To Set Session Error
 901, No Session For Request
 902, JSON parse error

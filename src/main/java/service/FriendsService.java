@@ -50,27 +50,25 @@ public class FriendsService {
 		if(requests == null)
 			return messageService.getMessageForCode(StatusMessagesAndCodesService.RETRIEVE_FRIENDS_FAIL_NONE);
 
-		List<String> names = new ArrayList<String>();
+		List<String> ids = new ArrayList<String>();
 		
 		for(FriendRequest next: requests) {
 			if(next.getStatus() == FriendRequestStatus.ACCEPTED) {
-				if(caller.getUsername().compareToIgnoreCase(next.getReceiverUsername()) == 0) {
-					names.add(next.getSenderUsername());
+				if(caller.getId().compareToIgnoreCase(next.getReceiverId()) == 0) {
+					ids.add(next.getSenderId());
 				}
 				else
-					names.add(next.getReceiverUsername());
+					ids.add(next.getReceiverId());
 			}
 		}
 		
-		if(names.size() == 0)
+		if(ids.size() == 0)
 			return messageService.getMessageForCode(StatusMessagesAndCodesService.RETRIEVE_FRIENDS_FAIL_NONE);
 		
-		List<User> users = userRepo.findMultipleUsersByUsername(names);
+		Iterable<User> users = userRepo.findAll(ids);
 		
-		if(users != null) {
-			for(int i=0; i < users.size(); i++) {
-				users.set(i, screenUserForFriend(users.get(i)));
-			}
+		for(User user: users) {
+			user = screenUserForFriend(user);
 		}
 		
 		log.debug("Retrieved Friends for " + caller.getUsername());
@@ -92,27 +90,25 @@ public class FriendsService {
 		if(requests == null)
 			return messageService.getMessageForCode(StatusMessagesAndCodesService.RETRIEVE_FRIENDS_FAIL_NONE);
 
-		List<String> names = new ArrayList<String>();
+		List<String> ids = new ArrayList<String>();
 		
 		for(FriendRequest next: requests) {
 			if(next.getStatus() == FriendRequestStatus.BLOCKED) {
-				if(caller.getUsername().compareToIgnoreCase(next.getReceiverUsername()) == 0) {
-					names.add(next.getSenderUsername());
+				if(caller.getUsername().compareToIgnoreCase(next.getReceiverId()) == 0) {
+					ids.add(next.getSenderId());
 				}
 				else
-					names.add(next.getReceiverUsername());
+					ids.add(next.getReceiverId());
 			}
 		}
 		
-		if(names.size() == 0)
+		if(ids.size() == 0)
 			return messageService.getMessageForCode(StatusMessagesAndCodesService.RETRIEVE_FRIENDS_FAIL_NONE);
 		
-		List<User> users = userRepo.findMultipleUsersByUsername(names);
+		Iterable<User> users = userRepo.findAll(ids);
 		
-		if(users != null) {
-			for(int i=0; i < users.size(); i++) {
-				users.set(i, screenUserForNonFriend(users.get(i)));
-			}
+		for(User user: users) {
+			user = screenUserForNonFriend(user);
 		}
 		
 		log.debug("Retrieved Blocked List for " + caller.getUsername());
@@ -135,27 +131,25 @@ public class FriendsService {
 		if(requests == null)
 			return messageService.getMessageForCode(StatusMessagesAndCodesService.RETRIEVE_FRIENDS_FAIL_NONE);
 
-		List<String> names = new ArrayList<String>();
+		List<String> ids = new ArrayList<String>();
 		
 		for(FriendRequest next: requests) {
 			if(next.getStatus() == FriendRequestStatus.PENDING) {
-				if(caller.getUsername().compareToIgnoreCase(next.getReceiverUsername()) == 0) {
-					names.add(next.getSenderUsername());
+				if(caller.getUsername().compareToIgnoreCase(next.getReceiverId()) == 0) {
+					ids.add(next.getSenderId());
 				}
 				else
-					names.add(next.getReceiverUsername());
+					ids.add(next.getReceiverId());
 			}
 		}
 		
-		if(names.size() == 0)
+		if(ids.size() == 0)
 			return messageService.getMessageForCode(StatusMessagesAndCodesService.RETRIEVE_FRIENDS_FAIL_NONE);
 		
-		List<User> users = userRepo.findMultipleUsersByUsername(names);
+		Iterable<User> users = userRepo.findAll(ids);
 		
-		if(users != null) {
-			for(int i=0; i < users.size(); i++) {
-				users.set(i, screenUserForNonFriend(users.get(i)));
-			}
+		for(User user: users) {
+			user = screenUserForNonFriend(user);
 		}
 		
 		log.debug("Retrieved Friends for " + caller.getUsername());
@@ -171,12 +165,12 @@ public class FriendsService {
 	 * @param username
 	 * @return ServerMessage
 	 */
-	public ServerMessage sendFriendRequest(User caller, String username) {
-		if(caller == null || username == null)
+	public ServerMessage sendFriendRequest(User caller, String id) {
+		if(caller == null || id == null)
 			throw new IllegalArgumentException("Caller and/or username in sendFriendRequest is null");
 		
 		try {
-			boolean success = userRepo.sendFriendRequest(caller, username);
+			boolean success = userRepo.sendFriendRequest(caller, id);
 			
 			if(success) 
 				return messageService.getMessageWithData(StatusMessagesAndCodesService.SEND_FRIEND_REQ_SUCCESS, new Gson().toJson(caller));
@@ -210,12 +204,12 @@ public class FriendsService {
 	 * @param String username
 	 * @return ServerMessage
 	 */
-	public ServerMessage acceptFriendRequest(User caller, String friendUsername) {
-		if(caller == null || friendUsername == null)
+	public ServerMessage acceptFriendRequest(User caller, String friendId) {
+		if(caller == null || friendId == null)
 			throw new IllegalArgumentException("Caller and/or username in sendFriendRequest is null");
 		
 		try {
-			boolean success = userRepo.acceptFriendRequest(caller, friendUsername);
+			boolean success = userRepo.acceptFriendRequest(caller, friendId);
 			
 			if(success)
 				return messageService.getMessageForCode(StatusMessagesAndCodesService.RESPONSE_FRIEND_REQ_SUCCESS);
@@ -243,12 +237,12 @@ public class FriendsService {
 	 * @param String username
 	 * @return ServerMessage
 	 */
-	public ServerMessage denyFriendRequest(User caller, String friendUsername) {
-		if(caller == null || friendUsername == null)
+	public ServerMessage denyFriendRequest(User caller, String friendId) {
+		if(caller == null || friendId == null)
 			throw new IllegalArgumentException("Caller and/or username in sendFriendRequest is null");
 		
 		try {
-			boolean success = userRepo.denyFriendRequest(caller, friendUsername);
+			boolean success = userRepo.denyFriendRequest(caller, friendId);
 			
 			if(success)
 				return messageService.getMessageForCode(StatusMessagesAndCodesService.RESPONSE_FRIEND_REQ_SUCCESS);
@@ -273,12 +267,12 @@ public class FriendsService {
 	 * @param String username
 	 * @return ServerMessage
 	 */
-	public ServerMessage blockFriendRequest(User caller, String friendUsername) {
-		if(caller == null || friendUsername == null)
+	public ServerMessage blockFriendRequest(User caller, String friendId) {
+		if(caller == null || friendId == null)
 			throw new IllegalArgumentException("Caller and/or username in sendFriendRequest is null");
 		
 		try {
-			boolean success = userRepo.blockFriendRequest(caller, friendUsername);
+			boolean success = userRepo.blockFriendRequest(caller, friendId);
 			
 			if(success)
 				return messageService.getMessageForCode(StatusMessagesAndCodesService.RESPONSE_FRIEND_REQ_SUCCESS);

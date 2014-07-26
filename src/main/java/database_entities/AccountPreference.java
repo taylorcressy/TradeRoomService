@@ -14,6 +14,8 @@ import java.util.List;
 
 import org.springframework.format.annotation.DateTimeFormat;
 
+
+
 public class AccountPreference {
 	
 	transient private String passwordHash; // Stop from sending over wire
@@ -24,7 +26,8 @@ public class AccountPreference {
 	private Date dob; // Date of birth
 	
 	private Address address;
-	transient private String currentGeoLocation;
+	private String city;
+	transient private GeoLocation currentGeoLocation;
 	private List<Address> preferredLocations;
 
 	public AccountPreference() {
@@ -33,7 +36,7 @@ public class AccountPreference {
 	/*
 	 * Constructor
 	 */
-	public AccountPreference(String passwordHash, String firstName, String lastName, Date dob, Address address, String currentGeoLocation,
+	public AccountPreference(String passwordHash, String firstName, String lastName, Date dob, Address address, GeoLocation currentGeoLocation,
 			List<Address> preferredLocations) {
 		this.passwordHash = passwordHash;
 		this.firstName = firstName;
@@ -78,6 +81,14 @@ public class AccountPreference {
 	public void setDob(Date dob) {
 		this.dob = dob;
 	}
+	
+	public String getCity() {
+		return this.city;
+	}
+	
+	public void setCity(String city) {
+		this.city = city;
+	}
 
 	public Address getAddress() {
 		return address;
@@ -87,11 +98,11 @@ public class AccountPreference {
 		this.address = address;
 	}
 
-	public String getCurrentGeoLocation() {
+	public GeoLocation getCurrentGeoLocation() {
 		return currentGeoLocation;
 	}
 
-	public void setCurrentGeoLocation(String defaultLocation) {
+	public void setCurrentGeoLocation(GeoLocation defaultLocation) {
 		this.currentGeoLocation = defaultLocation;
 	}
 

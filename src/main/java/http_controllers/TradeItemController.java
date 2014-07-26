@@ -6,6 +6,7 @@ import java.util.Date;
 import java.util.List;
 
 import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -95,13 +96,12 @@ public class TradeItemController {
 	 * @param itemIds - JSON String of a list of itemIds
 	 * @return ServerMessage
 	 */
-	@RequestMapping(value = "/retrieveItemsFromList", method = RequestMethod.POST)
+	@RequestMapping(value = "/retrieveItemsFromList", method = RequestMethod.GET)
 	public @ResponseBody
 	ServerMessage retrieveItemsFromList(
 			@RequestParam(value = "itemIds", required = true) String jsonIds,
 			HttpServletRequest request
 			) {
-		
 		User user = SessionHandler.getUserForSession(request);
 		
 		if(user == null)
@@ -125,7 +125,7 @@ public class TradeItemController {
 	 * @param count
 	 * @param condition
 	 */
-	@RequestMapping(value ="/updateTradeItem", method = RequestMethod.POST)
+	@RequestMapping(value ="/updateTradeItem", method = RequestMethod.PUT)
 	public @ResponseBody
 	ServerMessage updateTradeItem(
 			@RequestParam(value = "itemId", required = true) String itemId,
@@ -169,7 +169,13 @@ public class TradeItemController {
 		if(user == null)
 			return accountService.getMessagingService().getMessageForCode(StatusMessagesAndCodesService.SESSION_NON_EXISTENT);
 	
-		return itemService.removeTradeItem(user.getId(), itemId);
+		ServerMessage message = itemService.removeTradeItem(user.getId(), itemId);
+		
+		if(message.getCode() == StatusMessagesAndCodesService.DELETE_ITEM_SUCCESS) {
+			accountService.removeTradeItemFromUser(user, itemId);
+			return message;
+		}
+		else return message;
 	}
 	
 	
@@ -208,19 +214,27 @@ public class TradeItemController {
 	 * 
 	 * @param ItemID
 	 */
-	@RequestMapping(value = "/getImageById", method = RequestMethod.POST)
+	@RequestMapping(value = "/getImageById", method = RequestMethod.GET, produces = "image/jpeg;")
 	public @ResponseBody
 	byte[] getImageById(
 			@RequestParam(value = "imageId", required = true) String imageId,
-			HttpServletRequest request
+			HttpServletRequest request, HttpServletResponse response
 			) {
-		
 		User user = SessionHandler.getUserForSession(request);
+				
+		if(user == null) {
+			System.out.println("No Session Error in Get Image By ID");
+			return "No Session Error".getBytes();
+		}
 		
-		if(user == null)
-			return null;
+		log.info("Successfully Retrieved image from DB");
 		
-		return itemService.getImageForTradeItem(imageId);
+		byte[] image = itemService.getImageForTradeItem(imageId);
+		
+		if(image != null)
+			response.setContentLength(image.length);
+
+		return image;
 	}
 
 	
@@ -244,7 +258,6 @@ public class TradeItemController {
 		if(user == null)
 			return accountService.getMessagingService().getMessageForCode(StatusMessagesAndCodesService.SESSION_NON_EXISTENT);
 	
-		
 		return itemService.removeTradeItemImage(user.getId(), itemId, imageId);
 	}
 	

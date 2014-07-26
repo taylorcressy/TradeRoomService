@@ -8,6 +8,8 @@
  */
 package database_entities;
 
+/*Seriously remove 90% of these functions. Unnecessary for the most part*/
+
 import java.util.List;
 
 import database_entities.exceptions.FatalDatabaseErrorException;
@@ -22,35 +24,15 @@ public interface UserRepositoryExt {
 
 	public List<User> findMultipleUsersByEmail(List<String> emails);
 
-	public boolean deleteUserByUsername(String username);
-
-	public boolean deleteUserByEmail(String email);
-
-	
-	/* Account Preference Operations */
-	public boolean updateAccountPreferences(User user, AccountPreference acc);
-
-	public boolean updateAddress(User user, Address address);
-
-	public boolean updateCurrentGeoLocation(User user, String location);
-
-	public boolean updatePreferredLocations(User user, List<Address> addressList);
-
-	
-	/* Ranking Operations */
-	public boolean addRank(User user, Rank rank);
-
-	public boolean deleteRank(User user, String id);
-
 	
 	/* Friend Request operations */
-	public boolean sendFriendRequest(User from, String toUsername) throws FriendRequestExistsException, FatalDatabaseErrorException;
+	public boolean sendFriendRequest(User from, String toId) throws FriendRequestExistsException, FatalDatabaseErrorException;
 
-	public boolean acceptFriendRequest(User caller, String friendUsername) throws FriendRequestExistsException, FriendRequestDoesNotExistException, FatalDatabaseErrorException, UserObjectNotInitializedForOperation;
+	public boolean acceptFriendRequest(User caller, String friendId) throws FriendRequestExistsException, FriendRequestDoesNotExistException, FatalDatabaseErrorException, UserObjectNotInitializedForOperation;
 
-	public boolean denyFriendRequest(User caller, String friendUsername) throws FriendRequestDoesNotExistException, FatalDatabaseErrorException, UserObjectNotInitializedForOperation;
+	public boolean denyFriendRequest(User caller, String friendId) throws FriendRequestDoesNotExistException, FatalDatabaseErrorException, UserObjectNotInitializedForOperation;
 
-	public boolean blockFriendRequest(User caller, String friendUsername) throws FriendRequestExistsException, FriendRequestDoesNotExistException, FatalDatabaseErrorException, UserObjectNotInitializedForOperation;
+	public boolean blockFriendRequest(User caller, String friendId) throws FriendRequestExistsException, FriendRequestDoesNotExistException, FatalDatabaseErrorException, UserObjectNotInitializedForOperation;
 
 	
 	/* Trade Request operations */

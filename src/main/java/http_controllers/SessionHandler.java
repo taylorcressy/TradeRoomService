@@ -5,6 +5,10 @@
  */
 package http_controllers;
 
+import java.util.Enumeration;
+import java.util.HashMap;
+import java.util.Map;
+
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
 
@@ -27,6 +31,7 @@ public class SessionHandler {
 			return null;
 		
 		HttpSession session = request.getSession();
+		
 		User user = null;
 		if(session != null) {
 			Object obj;
@@ -39,6 +44,21 @@ public class SessionHandler {
 		
 		return user;
 	}
+	
+	//Debug function for displaying request headers
+	  private static Map<String, String> getHeadersInfo(HttpServletRequest request) {
+	 
+		Map<String, String> map = new HashMap<String, String>();
+	 
+		Enumeration<String> headerNames = request.getHeaderNames();
+		while (headerNames.hasMoreElements()) {
+			String key = (String) headerNames.nextElement();
+			String value = request.getHeader(key);
+			map.put(key, value);
+		}
+	 
+		return map;
+	  }
 	
 	/**
 	 * Set the current user to the current session

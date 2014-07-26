@@ -27,30 +27,30 @@ public class FriendRequest {
 		}
 	}
 	
-	private String senderUsername;
-	private String receiverUsername;
+	private String senderId;
+	private String receiverId;
 	private FriendRequestStatus status;
 	
-	public FriendRequest(String senderUsername, String receiverUsername, FriendRequestStatus status) {
-		this.senderUsername = senderUsername;
-		this.receiverUsername = receiverUsername;
+	public FriendRequest(String senderId, String receiverId, FriendRequestStatus status) {
+		this.senderId = senderId;
+		this.receiverId = receiverId;
 		this.status = status;
 	}
 
-	public String getSenderUsername() {
-		return senderUsername;
+	public String getSenderId() {
+		return senderId;
 	}
 
-	public void setSenderUsername(String senderUsername) {
-		this.senderUsername = senderUsername;
+	public void setSenderId(String senderId) {
+		this.senderId = senderId;
 	}
 
-	public String getReceiverUsername() {
-		return receiverUsername;
+	public String getReceiverId() {
+		return receiverId;
 	}
 
-	public void setReceiverUsername(String receiverUsername) {
-		this.receiverUsername = receiverUsername;
+	public void setReceiverId(String receiverId) {
+		this.receiverId = receiverId;
 	}
 
 	public FriendRequestStatus getStatus() {
@@ -63,6 +63,6 @@ public class FriendRequest {
 
 	@Override
 	public String toString() {
-		return "FriendRequest [senderId=" + senderUsername + ", receiverId=" + receiverUsername + ", status=" + status + "]";
+		return "FriendRequest [senderId=" + senderId + ", receiverId=" + receiverId + ", status=" + status + "]";
 	}
 }

@@ -84,6 +84,8 @@ public class StatusMessagesAndCodesService {
 	public static int SEND_TRADE_REQ_FAIL_INVALID_ITEMS = 292;
 	public static int SEND_TRADE_REQ_FAIL_TRADE_METHOD = 293;
 	public static int SEND_TRADE_REQ_FAIL_NO_ITEMS = 294;
+	public static int GET_REQUEST_SUCCESS = 800;
+	public static int GET_REQUEST_FAILED = 801;
 	public static int SESSION_SET_FAILED = 900;
 	public static int SESSION_NON_EXISTENT = 901;
 	public static int JSON_PARSE_ERROR = 902;

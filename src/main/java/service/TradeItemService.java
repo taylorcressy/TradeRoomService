@@ -45,9 +45,9 @@ public class TradeItemService {
 	 */
 	public ServerMessage addTradeItem(String name, String description, List<String> tags, List<String> imageIds, Integer count, String condition,
 			String dateAdded, String ownerId) {
-		if (name == null || condition == null || dateAdded == null || ownerId == null)
+		if (name == null || name=="" || condition == null || condition=="" || dateAdded == null || ownerId == null)
 			return messageService.getMessageForCode(StatusMessagesAndCodesService.TRADE_ITEM_CREATION_FAILED_FORM);
-		
+				
 		if (name.trim().length() < defaultProperties.getIntProperty("minItemNameSize")
 				|| name.trim().length() > defaultProperties.getIntProperty("maxItemNameSize"))
 			return messageService.getMessageForCode(StatusMessagesAndCodesService.TRADE_ITEM_CREATION_FAILED_FORM);
@@ -165,7 +165,15 @@ public class TradeItemService {
 		if(item.getOwnerId().compareToIgnoreCase(ownerId) != 0)
 			return messageService.getMessageForCode(StatusMessagesAndCodesService.DELETE_ITEM_FAILED_WRONG_OWNER);
 		
-		itemRepo.delete(itemId);
+		if(item.getImageIds() != null) {
+			for(String imageId: item.getImageIds()) {
+				itemRepo.deleteTradeItemImage(imageId);
+			}
+		}
+		
+		
+		
+		itemRepo.delete(item);
 		
 		return messageService.getMessageForCode(StatusMessagesAndCodesService.DELETE_ITEM_SUCCESS);
 	}
@@ -190,6 +198,9 @@ public class TradeItemService {
 		if(item.getOwnerId().compareTo(userId) != 0)
 			return messageService.getMessageForCode(StatusMessagesAndCodesService.IMAGE_SAVE_FAIL_WRONG_OWNER);
 		
+		if(item.getImageIds() == null) {
+			item.setImageIds(new ArrayList<String>());
+		}
 		if(item.getImageIds().size() >= defaultProperties.getIntProperty("maxNumberOfImages"))
 			return messageService.getMessageForCode(StatusMessagesAndCodesService.IMAGE_SAVE_FAIL_MAX_IMAGES);
 		
@@ -215,8 +226,8 @@ public class TradeItemService {
 	 * @return ServerMessage
 	 */
 	public ServerMessage getAllTradeItems(List<String> ids) {
-		if(ids == null || ids.size() == 0)
-			throw new IllegalArgumentException("Empty list");
+		if(ids == null)
+			throw new IllegalArgumentException("Null list");
 		
 		List<TradeItem> items = new ArrayList<TradeItem>();
 		
@@ -227,10 +238,10 @@ public class TradeItemService {
 				items.add(nextItem);
 		}
 		
-		if(items.size() == 0) 
-			return messageService.getMessageForCode(StatusMessagesAndCodesService.RECV_ITEMS_FAILED_NO_ITEMS);
-		else
-			return messageService.getMessageWithData(StatusMessagesAndCodesService.RECV_ITEMS_SUCCESS, new Gson().toJson(items));
+		//if(items.size() == 0) 
+		//	return messageService.getMessageForCode(StatusMessagesAndCodesService.RECV_ITEMS_FAILED_NO_ITEMS);
+		//else
+			return messageService.getMessageWithData(StatusMessagesAndCodesService.RECV_ITEMS_SUCCESS, items);
 		
 	}
 	
@@ -264,25 +275,29 @@ public class TradeItemService {
 		if(item == null)
 			return messageService.getMessageForCode(StatusMessagesAndCodesService.IMAGE_DELETE_FAILED_NO_ITEM);
 		
-		if(ownerId.compareToIgnoreCase(item.getOwnerId()) == 0)
+		if(ownerId.compareToIgnoreCase(item.getOwnerId()) != 0)
 			return messageService.getMessageForCode(StatusMessagesAndCodesService.IMAGE_DELETE_FAILED_INVALID_USER);
 		
 		//See if the image exists for the item
 		boolean match = false;
+		int index = 0;
 		if(item.getImageIds() != null) {
 			for(String next: item.getImageIds()) {
 				if(next.compareToIgnoreCase(imageId) == 0) {
 					match = true;
 					break;
 				}
+				index++;
 			}
 		}
 		
 		if(!match)
 			return messageService.getMessageForCode(StatusMessagesAndCodesService.IMAGE_DELETE_FAILED_NO_IMAGE);
 		
-		if(itemRepo.deleteTradeItemImage(imageId))
+		if(itemRepo.deleteTradeItemImage(imageId)) {
+			item.getImageIds().remove(index);
 			return messageService.getMessageForCode(StatusMessagesAndCodesService.IMAGE_DELETE_SUCCESS);
+		}
 		else
 			return messageService.getMessageForCode(StatusMessagesAndCodesService.DATABASE_ERROR);
 	}

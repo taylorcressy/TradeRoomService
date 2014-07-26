@@ -24,6 +24,7 @@ import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import config.AppConfig;
 import database_entities.AccountPreference;
 import database_entities.Address;
+import database_entities.GeoLocation;
 import database_entities.User;
 import database_entities.UserRepository;
 import database_entities.exceptions.DetailedDuplicateKeyException;
@@ -41,7 +42,7 @@ public class TestUserDatabaseHandling {
 
 	private void setup() {		
 		AccountPreference pref = new AccountPreference("1234", "Taylor", "Cressy", null, new Address("Mary Lane", "1234",
-				"KT1 1Ty", "England", "Norbiton", "London", "12345 - 12345"), "12345 - 12345", null);
+				"KT1 1Ty", "England", "Norbiton", "London", "12345 - 12345"), new GeoLocation(12345, 12345), null);
 		AccountPreference realisticRegisterPref = new AccountPreference("1234", "Taylor", "Cressy", null, null, null, null);
 		
 		this.primaryUser = new User("test","test@gmail.com", pref, null, null, null, null, new Date());
@@ -129,11 +130,13 @@ public class TestUserDatabaseHandling {
 		setup();
 		this.insertHelperUser();
 		
-		AccountPreference updatedPref = new AccountPreference("12345", "Bob", "Hope", new Date(), new Address(), "1234", null);
+		AccountPreference updatedPref = new AccountPreference("12345", "Bob", "Hope", new Date(), new Address(), null, null);
 		
-		boolean success = userRepo.updateAccountPreferences(this.helperUser, updatedPref);
+		this.helperUser.setAccountPreference(updatedPref);
 		
-		assertTrue(success);
+		User success = userRepo.save(this.helperUser);
+		
+		assertNotNull(success);
 		log.debug(this.helperUser.toString());
 		
 		this.deleteHelperUser();
@@ -147,9 +150,11 @@ public class TestUserDatabaseHandling {
 		Address address = new Address("Orion", "1234", "91406", "United States", "Van Nuys", "Los Angeles", "Some code");
 		new Address();
 		
-		boolean success = userRepo.updateAddress(this.helperUser, address);
+		this.helperUser.getAccountPreference().setAddress(address);
 		
-		assertTrue(success);
+		User success = userRepo.save(this.helperUser);
+		
+		assertNotNull(success);
 		log.debug(this.helperUser.toString());
 		
 		this.deleteHelperUser();
@@ -159,12 +164,12 @@ public class TestUserDatabaseHandling {
 	public void testSettingCurrentLocation() {
 		setup();
 		this.insertHelperUser();
+				
+		this.helperUser.getAccountPreference().setCurrentGeoLocation(new GeoLocation(12345, 12345));
 		
-		String randomLocationStr = "ab321s";
+		User success = userRepo.save(this.helperUser);
 		
-		boolean success = userRepo.updateCurrentGeoLocation(this.helperUser, randomLocationStr);
-		
-		assertTrue(success);
+		assertNotNull(success);
 		log.debug(this.helperUser.toString());
 		
 		this.deleteHelperUser();
@@ -181,9 +186,11 @@ public class TestUserDatabaseHandling {
 		preferredLocations.add(address);
 		preferredLocations.add(address);
 		
-		boolean success = userRepo.updatePreferredLocations(this.helperUser, preferredLocations);
+		this.helperUser.getAccountPreference().setPreferredLocations(preferredLocations);
 		
-		assertTrue(success);
+		User success = userRepo.save(this.helperUser);
+		
+		assertNotNull(success);
 		log.debug(this.helperUser.toString());
 		
 		this.deleteHelperUser();
