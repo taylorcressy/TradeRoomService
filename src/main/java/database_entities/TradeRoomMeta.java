@@ -74,8 +74,6 @@ public class TradeRoomMeta {
 		return maxItemImageCount;
 	}
 	
-	
-
 	public List<String> getTradeLogIds() {
 		return tradeLogIds;
 	}

@@ -14,7 +14,7 @@ import config.AppConfig;
 import database_entities.User;
 import service.FriendsService;
 import service.ServerMessage;
-import database_entities.UserRepository;
+import database_entities.repositories.UserRepository;
 
 @RunWith(SpringJUnit4ClassRunner.class)
 @ContextConfiguration(classes={AppConfig.class})

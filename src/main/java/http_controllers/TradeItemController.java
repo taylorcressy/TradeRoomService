@@ -125,7 +125,7 @@ public class TradeItemController {
 	 * @param count
 	 * @param condition
 	 */
-	@RequestMapping(value ="/updateTradeItem", method = RequestMethod.PUT)
+	@RequestMapping(value ="/updateTradeItem", method = RequestMethod.POST)
 	public @ResponseBody
 	ServerMessage updateTradeItem(
 			@RequestParam(value = "itemId", required = true) String itemId,

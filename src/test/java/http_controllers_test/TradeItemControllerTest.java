@@ -138,9 +138,9 @@ public class TradeItemControllerTest {
 	
 	@Test
 	public void testRemoveImageOfItem() throws Exception {
-		this.login();
+		//this.login();
 		
-		HashMap<String, String> param = new HashMap<String, String>();
+		//HashMap<String, String> param = new HashMap<String, String>();
 	}
 	
 	private String sendPost(String userRequest, Map<String, String> params) throws Exception {

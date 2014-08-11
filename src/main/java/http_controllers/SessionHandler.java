@@ -30,6 +30,8 @@ public class SessionHandler {
 		if(request == null)
 			return null;
 		
+		//System.out.println(getHeadersInfo(request));
+		
 		HttpSession session = request.getSession();
 		
 		User user = null;
@@ -46,7 +48,8 @@ public class SessionHandler {
 	}
 	
 	//Debug function for displaying request headers
-	  private static Map<String, String> getHeadersInfo(HttpServletRequest request) {
+	
+	  public static Map<String, String> getHeadersInfo(HttpServletRequest request) {
 	 
 		Map<String, String> map = new HashMap<String, String>();
 	 

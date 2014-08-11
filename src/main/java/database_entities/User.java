@@ -32,6 +32,13 @@ public class User {
 	@DateTimeFormat(pattern="dd-MM-yyyy")
 	private Date lastLogin;
 	
+	private String facebookId;
+	
+	private String city;
+	private double [] position;
+	
+	private String profilePictureId;
+	
 	private AccountPreference accountPreference;
 	private TradeRoomMeta tradeRoomMeta;
 	private List<Rank> ranks;
@@ -51,6 +58,17 @@ public class User {
 	 */
 	public User(String username) {
 		this.username = username;
+		this.position = new double[2];
+	}
+	
+	/**
+	 * For GEO LOCATION testing ONLY. Not for use otherwise
+	 */
+	public User(String city, double longitude, double latitude) {
+		this.city = city;
+		this.position = new double[2];
+		this.position[0] = longitude;
+		this.position[1] = latitude;
 	}
 
 	/**
@@ -65,6 +83,7 @@ public class User {
 	 */
 	public User(String username, String email, AccountPreference pref, TradeRoomMeta tradeRoomMeta, List<Rank> ranks,
 			List<FriendRequest> friendRequests, List<TradeRequest> tradeRequests, Date dateJoined) {
+		this.position = new double[2];
 		this.username = username;
 		this.email = email;
 		this.accountPreference = pref;
@@ -86,6 +105,26 @@ public class User {
 		this.id = id;
 	}
 
+	public String getCity() {
+		return city;
+	}
+
+	public void setCity(String city) {
+		this.city = city;
+	}
+
+	public double[] getPosition() {
+		return position;
+	}
+
+	public void setPosition(double[] position) {
+		this.position = position;
+	}
+
+	public String getProfilePictureId() {
+		return profilePictureId;
+	}
+
 	public String getUsername() {
 		return username;
 	}
@@ -94,6 +133,14 @@ public class User {
 		this.username = username;
 	}
 
+	public String profilePictureId() {
+		return this.profilePictureId();
+	}
+	
+	public void setProfilePictureId(String profilePictureId) {
+		this.profilePictureId = profilePictureId;
+	}
+	
 	public String getEmail() {
 		return email;
 	}
@@ -165,6 +212,14 @@ public class User {
 	public void setRole(UserRole userRole) {
 		this.role = userRole;
 	}
+	public String getFacebookId() {
+		return facebookId;
+	}
+
+	public void setFacebookId(String facebookId) {
+		this.facebookId = facebookId;
+	}
+
 
 	@Override
 	public int hashCode() {

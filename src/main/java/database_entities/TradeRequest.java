@@ -13,26 +13,29 @@ import java.util.List;
 
 public class TradeRequest {
 
-	private String from;
-	private String to;
+	private String from;				/*ID*/
+	private String to;					/*ID*/
 	private List<String> fromItems;		/*Ids*/
 	private List<String> toItems;		/*Ids*/
 	private Date dateInitiated;
 	private TradeRequestStatus status;
-	private TradeMethod method;
+	private TradeMethod methodFrom;
+	private TradeMethod methodTo;
+	private boolean counterRequest;
 
 	/*
 	 * Constructor
 	 */
 	public TradeRequest(String from, String to, List<String> fromItems, List<String> toItems,
-			Date dateInitiated, TradeRequestStatus status, TradeMethod method) {
+			Date dateInitiated, TradeRequestStatus status, TradeMethod methodTo, TradeMethod methodFrom, boolean counterRequest) {
 		this.from = from;
 		this.to = to;
 		this.fromItems = fromItems;
 		this.toItems = toItems;
 		this.dateInitiated = dateInitiated;
 		this.status = status;
-		this.method = method;
+		this.methodFrom = methodTo;
+		this.counterRequest = counterRequest;
 	}
 
 	/*
@@ -53,15 +56,31 @@ public class TradeRequest {
 	public void setTo(String to) {
 		this.to = to;
 	}
+	
+	public TradeMethod getMethodFrom() {
+		return methodFrom;
+	}
 
-	public TradeMethod getTradeMethod() {
-		return this.method;
+	public void setMethodFrom(TradeMethod methodFrom) {
+		this.methodFrom = methodFrom;
 	}
-	
-	public void setTradeMethod(TradeMethod method) {
-		this.method = method;
+
+	public TradeMethod getMethodTo() {
+		return methodTo;
 	}
-	
+
+	public void setMethodTo(TradeMethod methodTo) {
+		this.methodTo = methodTo;
+	}
+
+	public boolean isCounterRequest() {
+		return counterRequest;
+	}
+
+	public void setCounterRequest(boolean counterRequest) {
+		this.counterRequest = counterRequest;
+	}
+
 	public List<String> getFromItems() {
 		return fromItems;
 	}
@@ -185,8 +204,7 @@ public class TradeRequest {
 	public enum TradeMethod {
 		DROP_OFF(0),
 		PICK_UP(1),
-		EXCHANGE_CONTACT(2),
-		MUTUAL_MEETING(3);
+		EXCHANGE_CONTACT(2);
 		
 		private int value;
 		

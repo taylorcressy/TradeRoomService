@@ -9,7 +9,7 @@
  * 
  * TODO: ADD LOGGING!!!!!
  */
-package database_entities;
+package database_entities.repositories;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -25,6 +25,8 @@ import org.springframework.data.mongodb.core.query.Update;
 
 import com.mongodb.WriteResult;
 
+import database_entities.FriendRequest;
+import database_entities.User;
 import database_entities.FriendRequest.FriendRequestStatus;
 import database_entities.exceptions.FatalDatabaseErrorException;
 import database_entities.exceptions.FriendRequestDoesNotExistException;

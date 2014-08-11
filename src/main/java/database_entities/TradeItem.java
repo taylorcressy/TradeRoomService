@@ -11,6 +11,7 @@ package database_entities;
 import java.util.List;
 
 import org.springframework.data.annotation.Id;
+import org.springframework.data.mongodb.core.index.TextIndexed;
 import org.springframework.data.mongodb.core.mapping.Document;
 
 @Document
@@ -51,11 +52,12 @@ public class TradeItem {
 	}
 	
 
-	@Id
-	private String id;
-	private String name;
-	private String description;
-	private List<String> tags;
+	@Id private String id;
+	
+	@TextIndexed(weight=3) private String name;
+	@TextIndexed private String description;
+	@TextIndexed(weight=2) private List<String> tags;
+	
 	private List<String> imageIds;
 	private int count;
 	private ItemCondition condition;

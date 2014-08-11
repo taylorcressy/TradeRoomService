@@ -6,12 +6,13 @@
  * @version 1.0
  * @Date 21 April, 2014
  */
-package database_entities;
+package database_entities.repositories;
 
 /*Seriously remove 90% of these functions. Unnecessary for the most part*/
 
 import java.util.List;
 
+import database_entities.User;
 import database_entities.exceptions.FatalDatabaseErrorException;
 import database_entities.exceptions.FriendRequestDoesNotExistException;
 import database_entities.exceptions.FriendRequestExistsException;

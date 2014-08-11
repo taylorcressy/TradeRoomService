@@ -60,8 +60,18 @@
 290, Send Trade Request Success
 291, Send Trade Request Failed: No User
 292, Send Trade Request Failed: Invalid Items
-293, Send Trade Request Failed: Invalid Trade Method (Must be "DROP_OFF", "PICK_UP", "EXCHANGE_CONTACT", "MUTUAL_MEETING")
+293, Send Trade Request Failed: Invalid Trade Method
 294, Send Trade Request Failed: User Has No Trade Items To Trade
+300, Update GeoLocation Success
+301, Update GeoLocation Failed
+400, Search Successful
+401, Search Failed
+402, Search Empty
+500, Retrieve User Information Success
+501, Retrieve User Failed: No User With That ID
+502, Retrieve User Failed: Users Have Blocked Each Other
+510, Login With Facebook Success
+511, Facebook Login Invalid
 800, GET request successful
 801, GET request failed
 900, Failed To Set Session Error

@@ -1,7 +1,9 @@
-package database_entities;
+package database_entities.repositories;
 
 import java.util.Collection;
 import java.util.List;
+
+import database_entities.TradeItem;
 
 public interface TradeItemRepositoryExt {
 	
@@ -10,4 +12,6 @@ public interface TradeItemRepositoryExt {
 	public boolean deleteTradeItemImage(String imageId);
 	
 	public List<TradeItem> findItemsWithTags(Collection<String> tags);
+	
+	public List<TradeItem> findItemsWithTextIndexedSearchAndOwnerIdNot(String search, String ownerId);
 }

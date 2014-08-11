@@ -22,10 +22,9 @@ import org.springframework.core.io.ClassPathResource;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
-import config.AppConfig;
 import config.TestConfig;
 import database_entities.TradeItem;
-import database_entities.TradeItemRepository;
+import database_entities.repositories.TradeItemRepository;
 
 @RunWith(SpringJUnit4ClassRunner.class)
 @ContextConfiguration(classes = { TestConfig.class })

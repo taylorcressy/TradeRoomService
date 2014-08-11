@@ -36,7 +36,7 @@ public class AccountCredentialServiceTest {
 	
 	@Test
 	public void testRegister() {
-		ServerMessage message = service.registerNewUser("rayred", "upshutdown@gmail.com", "ThisIsARealPassword1", "Taylor", "Cressy");
+		ServerMessage message = service.registerNewUser("rayred", "upshutdown@gmail.com", "ThisIsARealPassword1", "Taylor", "Cressy", "fake");
 		assertNotNull(message);
 		log.debug("Response: " + message);
 	}
@@ -63,14 +63,6 @@ public class AccountCredentialServiceTest {
 	public void testUpdateAddress() {
 		setup();
 		ServerMessage message = service.updateUserAddress(this.helperUser, "Orion", "1234", "91406", "United States", "Van Nuys", "Los Angeles", "Some Code");
-		assertNotNull(message);
-		log.debug("Retrieved Message: " + message);
-	}
-	
-	@Test
-	public void updateCurrentLocation() {
-		setup();
-		ServerMessage message = service.updateUserCurrentLocation(this.helperUser, "Current Location", 12345, 12345);
 		assertNotNull(message);
 		log.debug("Retrieved Message: " + message);
 	}

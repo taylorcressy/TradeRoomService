@@ -1,4 +1,4 @@
-package database_entities;
+package database_entities.repositories;
 
 import java.io.IOException;
 import java.util.Collection;
@@ -9,13 +9,19 @@ import org.bson.types.ObjectId;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.data.mongodb.core.MongoTemplate;
 import org.springframework.data.mongodb.core.query.Criteria;
 import org.springframework.data.mongodb.core.query.Query;
+import org.springframework.data.mongodb.core.query.text.Term;
+import org.springframework.data.mongodb.core.query.text.TextCriteria;
+import org.springframework.data.mongodb.core.query.text.TextQuery;
 
 import com.mongodb.gridfs.GridFS;
 import com.mongodb.gridfs.GridFSDBFile;
 import com.mongodb.gridfs.GridFSInputFile;
+
+import database_entities.TradeItem;
 
 public class TradeItemRepositoryImpl implements TradeItemRepositoryExt {
 
@@ -90,5 +96,17 @@ public class TradeItemRepositoryImpl implements TradeItemRepositoryExt {
 		if(deleted == 1)
 			return true;
 		else return false;
+	}
+	
+	/**
+	 * Text Indexed Search
+	 */
+	public List<TradeItem> findItemsWithTextIndexedSearchAndOwnerIdNot(String search, String ownerId) {
+		TextCriteria textCriteria = TextCriteria.forDefaultLanguage().matchingPhrase(search);
+		Criteria notCriteria = Criteria.where("ownerId").ne(ownerId);
+		//Remember to make a variable (The PageRequest)
+		Query query = new Query(notCriteria.andOperator(textCriteria));
+		//Query query = new TextQuery(criteria).sortByScore().addCriteria(criteria).with(new PageRequest(0, 10)).addCriteria(notCriteria);
+		return mongoOperations.find(query, TradeItem.class);
 	}
 }

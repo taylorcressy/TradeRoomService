@@ -84,6 +84,16 @@ public class StatusMessagesAndCodesService {
 	public static int SEND_TRADE_REQ_FAIL_INVALID_ITEMS = 292;
 	public static int SEND_TRADE_REQ_FAIL_TRADE_METHOD = 293;
 	public static int SEND_TRADE_REQ_FAIL_NO_ITEMS = 294;
+	public static int UPDATE_GEOLOCATION_SUCCESS = 300;
+	public static int UPDATE_GEOLOCATION_FAILED = 301;
+	public static int SEARCH_SUCCESSFUL = 400;
+	public static int SEARCH_FAILED = 401;
+	public static int SEARCH_EMPTY = 402;
+	public static int RETRIEVE_USER_DATA_SUCCESS = 500;
+	public static int RETRIEVE_USER_DATA_FAILED_NO_USER = 501;
+	public static int RETRIEVE_USER_DATA_FAILED_BLOCKED = 502;
+	public static int FACEBOOK_LOGIN_SUCCESS = 510;
+	public static int FACEBOOK_LOGIN_INVALID = 511;
 	public static int GET_REQUEST_SUCCESS = 800;
 	public static int GET_REQUEST_FAILED = 801;
 	public static int SESSION_SET_FAILED = 900;

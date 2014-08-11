@@ -1,7 +1,11 @@
 package http_controllers;
 
+import java.util.Locale;
+
 import javax.servlet.http.HttpServletRequest;
 
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.ApplicationContext;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
@@ -15,6 +19,10 @@ import database_entities.User.UserRole;
 @Controller
 @RequestMapping(value="/admin/**")
 public class AdminController {
+	
+	public AdminController() {
+
+	}
 
 	@RequestMapping(value = "/getUsersWithUsername", method = RequestMethod.POST)
 	public @ResponseBody

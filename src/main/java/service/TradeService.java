@@ -15,16 +15,16 @@ import org.springframework.stereotype.Service;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 
-import database_entities.TradeItemRepository;
 import database_entities.TradeRequest;
 import database_entities.TradeRequest.TradeMethod;
 import database_entities.User;
-import database_entities.UserRepository;
 import database_entities.TradeRequest.TradeRequestStatus;
+import database_entities.repositories.TradeItemRepository;
+import database_entities.repositories.UserRepository;
 
 
 @Service
-public class TradeRoomService {
+public class TradeService {
 
 	
 	public static final Logger log = LoggerFactory.getLogger("service-log");
@@ -38,31 +38,8 @@ public class TradeRoomService {
 	
 	private Gson gson;
 	
-	public TradeRoomService() {
+	public TradeService() {
 		this.gson = new GsonBuilder().setDateFormat("MMM dd, yyyy").create();
-	}
-	
-	/**
-	 * 	Retrieve the Trade Room meta details of a user
-	 * @param caller
-	 * @param targetUser
-	 * @return ServerMessage
-	 */
-	public ServerMessage getTradeRoomOfUser(User caller, String targetUser) {
-		/*
-		 * 
-		 * TODO: Implement security preferences screening user's from viewing other user's trade room
-		 * something like. isUserCapableOfViewing(srcUserObj, targetUserObj); 
-		 */
-		
-		//Grab target user
-		User targUsrObj = userRepo.findOneByUsername(targetUser);
-		
-		if(targUsrObj == null)
-			return messageService.getMessageForCode(StatusMessagesAndCodesService.TRADE_META_RETRV_FAILED_NO_USER);
-		
-		//Return the trade room meta
-		return messageService.getMessageWithData(StatusMessagesAndCodesService.TRADE_META_RETRV_SUCCESS, this.gson.toJson(targUsrObj.getTradeRoomMeta()));
 	}
 	
 	/*
@@ -79,7 +56,7 @@ public class TradeRoomService {
 	 * @param TradeMethod
 	 * @return ServerMessage
 	 */
-	public ServerMessage sendTradeRequestToUser(User caller, String toUser, List<String> callerIds, List<String> targetIds, String tradeMethod) {
+	public ServerMessage sendTradeRequestToUser(User caller, String toUser, List<String> callerIds, List<String> targetIds, String tradeMethodFrom, String tradeMethodTo, boolean counterRequest) {
 		
 		User targUsrObj = userRepo.findOneByUsername(toUser);
 		
@@ -92,15 +69,14 @@ public class TradeRoomService {
 		List<String> callerCurrentItems = caller.getTradeRoomMeta().getItemIds();
 		List<String> targetCurrentItems = targUsrObj.getTradeRoomMeta().getItemIds();
 		
-		if(targetCurrentItems == null)
-			return messageService.getMessageForCode(StatusMessagesAndCodesService.SEND_TRADE_REQ_FAIL_NO_ITEMS);
-		if(callerCurrentItems == null && callerIds.size() > 0)
-			return messageService.getMessageForCode(StatusMessagesAndCodesService.SEND_TRADE_REQ_FAIL_INVALID_ITEMS);
+		//Check if the sizes are okay to iterate through. If targets item size is less then the objects, then we know
+		//	that there is ids in the request that do not belong
 		if(targetCurrentItems.size() < targetIds.size())
 			return messageService.getMessageForCode(StatusMessagesAndCodesService.SEND_TRADE_REQ_FAIL_INVALID_ITEMS);
 		if(callerCurrentItems.size() < callerIds.size())
 			return messageService.getMessageForCode(StatusMessagesAndCodesService.SEND_TRADE_REQ_FAIL_INVALID_ITEMS);
 		
+		//Check for mismatches
 		for(String nextId: callerIds) {
 			if(callerCurrentItems.contains(nextId) == false)
 				return messageService.getMessageForCode(StatusMessagesAndCodesService.SEND_TRADE_REQ_FAIL_INVALID_ITEMS); 
@@ -111,12 +87,14 @@ public class TradeRoomService {
 		}
 		
 		//All IDs are valid from this point forward, so create the trade request and save it to both users
-		TradeMethod method = TradeMethod.valueOf(tradeMethod);
+		TradeMethod methodFrom = TradeMethod.valueOf(tradeMethodFrom);
+		TradeMethod methodTo = TradeMethod.valueOf(tradeMethodTo);
 		
-		if(method == null)
+		if(methodFrom == null || methodTo == null)
 			return messageService.getMessageForCode(StatusMessagesAndCodesService.SEND_TRADE_REQ_FAIL_TRADE_METHOD);
 		
-		TradeRequest request = new TradeRequest(caller.getUsername(), toUser, callerIds, targetIds, new Date(), TradeRequestStatus.PENDING, method);
+		//Create the request
+		TradeRequest request = new TradeRequest(caller.getUsername(), toUser, callerIds, targetIds, new Date(), TradeRequestStatus.PENDING, methodTo, methodFrom, counterRequest);
 		
 		//Update user objects with new Trade Requests
 		caller.getTradeRequests().add(request);

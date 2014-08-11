@@ -22,12 +22,11 @@
 		<!-- Web -->
 		<jsp.version>2.2</jsp.version>
 		<jstl.version>1.2</jstl.version>
-		<servlet.version>2.5</servlet.version>
+		<servlet.version>2.5</servlet.version>		
 
-
-		<!-- Spring -->
-		<spring-framework.version>3.2.5.RELEASE</spring-framework.version>
-
+		<!-- Spring Data -->
+		<spring-data-mongodb.version>1.6.0.M1</spring-data-mongodb.version>
+		
 		<!-- Hibernate / JPA -->
 		<hibernate.version>4.2.1.Final</hibernate.version>
 
@@ -35,30 +34,58 @@
 		<logback.version>1.0.13</logback.version>
 		<slf4j.version>1.7.5</slf4j.version>
 
+		<!-- Security -->
+		<spring-security-core.version>3.2.4.RELEASE</spring-security-core.version>
+		<spring-security-config.version>3.2.4.RELEASE</spring-security-config.version>
+		<spring-security-web.version>3.2.4.RELEASE</spring-security-web.version>
+		
 		<!-- Test -->
 		<junit.version>4.11</junit.version>
-
+		
 	</properties>
 
 	<dependencies>
-		<!-- Spring MVC -->
-		<dependency>
-			<groupId>org.springframework</groupId>
-			<artifactId>spring-webmvc</artifactId>
-		</dependency>
-
+	    	
 		<!-- Spring Mongo Data -->
 		<dependency>
 			<groupId>org.springframework.data</groupId>
 			<artifactId>spring-data-mongodb</artifactId>
+			<exclusions>
+				<exclusion>
+					<artifactId>mongo-java-driver</artifactId>
+					<groupId>org.mongodb</groupId>
+				</exclusion>
+			</exclusions>
 		</dependency>
+		
+		<dependency>
+			<artifactId>mongo-java-driver</artifactId>
+			<groupId>org.mongodb</groupId>
+			<version>2.12.1</version><!--$NO-MVN-MAN-VER$-->
+		</dependency>
+		
 
 		<!-- Spring and Transactions -->
 		<dependency>
 			<groupId>org.springframework</groupId>
 			<artifactId>spring-tx</artifactId>
 		</dependency>
-
+		
+		<!-- Spring Security -->
+		<dependency>
+			<groupId>org.springframework.security</groupId>
+			<artifactId>spring-security-web</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>org.springframework.security</groupId>
+			<artifactId>spring-security-config</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>org.springframework.security</groupId>
+			<artifactId>spring-security-core</artifactId>
+		</dependency>
+		
+		
 		<!-- GSON -->
 		<dependency>
 			<groupId>com.google.code.gson</groupId>
@@ -153,13 +180,10 @@
 			<groupId>org.spockframework</groupId>
 			<artifactId>spock-core</artifactId>
 		</dependency>
+
 		<dependency>
-			<groupId>org.apache.httpcomponents</groupId>
-			<artifactId>httpclient</artifactId>
-		</dependency>
-		<dependency>
-			<groupId>org.apache.httpcomponents</groupId>
-			<artifactId>httpclient</artifactId>
+			<groupId>org.springframework.boot</groupId>
+			<artifactId>spring-boot-starter-security</artifactId>
 		</dependency>
 	</dependencies>
 

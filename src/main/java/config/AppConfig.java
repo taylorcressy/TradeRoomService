@@ -13,8 +13,7 @@ import server_utilities.DefaultProperties;
 public class AppConfig {
 
 	/**
-	 * Application Properties bean to be intialized on startup
-	 * 
+	 * Application Properties bean
 	 */
 	@Bean
 	public DefaultProperties defaultProperties() {

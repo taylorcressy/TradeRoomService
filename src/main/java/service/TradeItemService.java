@@ -12,8 +12,8 @@ import com.google.gson.Gson;
 
 import server_utilities.DefaultProperties;
 import database_entities.TradeItem;
-import database_entities.TradeItemRepository;
 import database_entities.TradeItem.ItemCondition;
+import database_entities.repositories.TradeItemRepository;
 
 @Service
 public class TradeItemService {
@@ -302,12 +302,9 @@ public class TradeItemService {
 			return messageService.getMessageForCode(StatusMessagesAndCodesService.DATABASE_ERROR);
 	}
 	
-	
-	
-	
-	
-	
-	
+	/**
+	 * Search for Trade Room Item 
+	 */
 	
 	
 	

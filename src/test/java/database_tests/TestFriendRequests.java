@@ -15,8 +15,8 @@ import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import config.AppConfig;
 import database_entities.FriendRequest.FriendRequestStatus;
 import database_entities.User;
-import database_entities.UserRepository;
 import database_entities.exceptions.DetailedDuplicateKeyException;
+import database_entities.repositories.UserRepository;
 
 @RunWith(SpringJUnit4ClassRunner.class)
 @ContextConfiguration(classes = { AppConfig.class })

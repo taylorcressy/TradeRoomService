@@ -27,7 +27,6 @@ public class AccountPreference {
 	
 	private Address address;
 	private String city;
-	transient private GeoLocation currentGeoLocation;
 	private List<Address> preferredLocations;
 
 	public AccountPreference() {
@@ -36,14 +35,12 @@ public class AccountPreference {
 	/*
 	 * Constructor
 	 */
-	public AccountPreference(String passwordHash, String firstName, String lastName, Date dob, Address address, GeoLocation currentGeoLocation,
-			List<Address> preferredLocations) {
+	public AccountPreference(String passwordHash, String firstName, String lastName, Date dob, Address address, List<Address> preferredLocations) {
 		this.passwordHash = passwordHash;
 		this.firstName = firstName;
 		this.lastName = lastName;
 		this.dob = dob;
 		this.address = address;
-		this.currentGeoLocation = currentGeoLocation;
 		this.preferredLocations = preferredLocations;
 	}
 
@@ -98,14 +95,6 @@ public class AccountPreference {
 		this.address = address;
 	}
 
-	public GeoLocation getCurrentGeoLocation() {
-		return currentGeoLocation;
-	}
-
-	public void setCurrentGeoLocation(GeoLocation defaultLocation) {
-		this.currentGeoLocation = defaultLocation;
-	}
-
 	public List<Address> getPreferredLocations() {
 		return preferredLocations;
 	}
@@ -124,7 +113,6 @@ public class AccountPreference {
 		final int prime = 31;
 		int result = 1;
 		result = prime * result + ((address == null) ? 0 : address.hashCode());
-		result = prime * result + ((currentGeoLocation == null) ? 0 : currentGeoLocation.hashCode());
 		result = prime * result + ((dob == null) ? 0 : dob.hashCode());
 		result = prime * result + ((firstName == null) ? 0 : firstName.hashCode());
 		result = prime * result + ((lastName == null) ? 0 : lastName.hashCode());
@@ -150,11 +138,6 @@ public class AccountPreference {
 			if (other.address != null)
 				return false;
 		} else if (!address.equals(other.address))
-			return false;
-		if (currentGeoLocation == null) {
-			if (other.currentGeoLocation != null)
-				return false;
-		} else if (!currentGeoLocation.equals(other.currentGeoLocation))
 			return false;
 		if (dob == null) {
 			if (other.dob != null)
@@ -187,7 +170,7 @@ public class AccountPreference {
 	@Override
 	public String toString() {
 		return "AccountPreference [firstName=" + firstName + ", lastName=" + lastName + ", dob=" + dob + ", address=" + address
-				+ ", defaultGeoLocation=" + currentGeoLocation + ", preferredLocations=" + preferredLocations + "]";
+				 + ", preferredLocations=" + preferredLocations + "]";
 	}
 
 }

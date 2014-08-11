@@ -76,6 +76,20 @@ public class FriendController {
 	 * 
 	 */
 	
+	@RequestMapping(value="/getAccountDetailsOfUser", method=RequestMethod.GET)
+	public @ResponseBody
+	ServerMessage getAccoundDetailsOfUser(
+			@RequestParam(value="userId", required=true) String userId,
+			HttpServletRequest request
+			) 
+	{
+		User user = SessionHandler.getUserForSession(request);
+		if(user == null)
+			return accountService.getMessagingService().getMessageForCode(StatusMessagesAndCodesService.SESSION_NON_EXISTENT);
+		else 
+			return friendService.getAccountDetailsOfUserWithId(user, userId);
+	}
+	
 	@RequestMapping(value="/retrieveAllFriends", method=RequestMethod.GET)
 	public @ResponseBody
 	ServerMessage retrieveAllFriends(HttpServletRequest request) {

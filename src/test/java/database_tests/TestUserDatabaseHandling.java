@@ -24,10 +24,9 @@ import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import config.AppConfig;
 import database_entities.AccountPreference;
 import database_entities.Address;
-import database_entities.GeoLocation;
 import database_entities.User;
-import database_entities.UserRepository;
 import database_entities.exceptions.DetailedDuplicateKeyException;
+import database_entities.repositories.UserRepository;
 
 @RunWith(SpringJUnit4ClassRunner.class)
 @ContextConfiguration(classes={AppConfig.class})
@@ -42,8 +41,8 @@ public class TestUserDatabaseHandling {
 
 	private void setup() {		
 		AccountPreference pref = new AccountPreference("1234", "Taylor", "Cressy", null, new Address("Mary Lane", "1234",
-				"KT1 1Ty", "England", "Norbiton", "London", "12345 - 12345"), new GeoLocation(12345, 12345), null);
-		AccountPreference realisticRegisterPref = new AccountPreference("1234", "Taylor", "Cressy", null, null, null, null);
+				"KT1 1Ty", "England", "Norbiton", "London", "12345 - 12345"), null);
+		AccountPreference realisticRegisterPref = new AccountPreference("1234", "Taylor", "Cressy", null, null, null);
 		
 		this.primaryUser = new User("test","test@gmail.com", pref, null, null, null, null, new Date());
 				
@@ -130,7 +129,7 @@ public class TestUserDatabaseHandling {
 		setup();
 		this.insertHelperUser();
 		
-		AccountPreference updatedPref = new AccountPreference("12345", "Bob", "Hope", new Date(), new Address(), null, null);
+		AccountPreference updatedPref = new AccountPreference("12345", "Bob", "Hope", new Date(), new Address(), null);
 		
 		this.helperUser.setAccountPreference(updatedPref);
 		
@@ -162,17 +161,8 @@ public class TestUserDatabaseHandling {
 	
 	@Test
 	public void testSettingCurrentLocation() {
-		setup();
-		this.insertHelperUser();
-				
-		this.helperUser.getAccountPreference().setCurrentGeoLocation(new GeoLocation(12345, 12345));
-		
-		User success = userRepo.save(this.helperUser);
-		
-		assertNotNull(success);
-		log.debug(this.helperUser.toString());
-		
-		this.deleteHelperUser();
+		/*TEST to update*/
+		return;
 	}
 	
 	

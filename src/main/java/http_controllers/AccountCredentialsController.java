@@ -37,7 +37,6 @@ public class AccountCredentialsController {
 	public @ResponseBody
 	ServerMessage getAccountDetailsOfLoggedInUser(HttpServletRequest request) {
 		User user = SessionHandler.getUserForSession(request);
-		
 		if(user == null) {
 			return accountService.getMessagingService().getMessageForCode(StatusMessagesAndCodesService.SESSION_NON_EXISTENT);
 		}
@@ -52,10 +51,11 @@ public class AccountCredentialsController {
 			@RequestParam(required=true, value="username") String username,
 			@RequestParam(required=true, value="password") String password,
 			@RequestParam(required=true, value="email") String email,
-			@RequestParam(required=true, value="firstName") String firstName,
-			@RequestParam(required=true, value="lastName") String lastName
+			@RequestParam(required=false, value="firstName") String firstName,
+			@RequestParam(required=false, value="lastName") String lastName,
+			@RequestParam(required=false, value="facebookId") String fbId		
 			) {
-		return accountService.registerNewUser(username, email, password, firstName, lastName);
+		return accountService.registerNewUser(username, email, password, firstName, lastName, fbId);
 	}
 	
 	@RequestMapping(value="/login", method=RequestMethod.POST)
@@ -80,6 +80,36 @@ public class AccountCredentialsController {
 		}
 		else 
 			return message;
+	}
+
+
+	@RequestMapping(value="/loginWithFacebook", method=RequestMethod.POST)
+	public @ResponseBody
+	ServerMessage loginUserWithFacebook(
+			@RequestParam(required=true, value="facebookId") String fbId,
+			@RequestParam(required=true, value="authToken") String authToken,
+			@RequestParam(required=false, value="firstName") String firstName,
+			@RequestParam(required=false, value="lastName") String lastName,
+			@RequestParam(required=true, value="email") String email,
+			@RequestParam(required=true, value="username") String username,
+			HttpServletRequest request
+			)
+	{
+		ServerMessage message = accountService.loginWithFacebook(fbId, authToken,firstName, lastName, username, email);
+		
+		if(message.getCode() == StatusMessagesAndCodesService.FACEBOOK_LOGIN_SUCCESS) {	//Successfully logged in or registered
+			//Set the session
+			if(SessionHandler.setUserToSession(request, (User) message.getData())) {
+				//Use Gson to send the user object over the wire as to respect transient variables.
+				message.setData(this.gson.toJson(message.getData()));
+				return message;
+			}
+			else {
+				return accountService.getMessagingService().getMessageForCode(StatusMessagesAndCodesService.SESSION_SET_FAILED);
+			}
+		}
+		
+		return message;
 	}
 	
 	@RequestMapping(value="/logout", method=RequestMethod.POST)
@@ -163,7 +193,7 @@ public class AccountCredentialsController {
 			@RequestParam(required=true, value="country") String country,
 			@RequestParam(required=true, value="county") String county,
 			@RequestParam(required=true, value="city") String city,
-			@RequestParam(required=true, value="geoLocation") String geoLocation,
+			@RequestParam(required=false, value="geoLocation") String geoLocation,
 			HttpServletRequest request
 			) {
 		
@@ -173,29 +203,5 @@ public class AccountCredentialsController {
 			return accountService.getMessagingService().getMessageForCode(StatusMessagesAndCodesService.SESSION_NON_EXISTENT);
 		
 		return accountService.updateUserAddress(user, streetName, streetNumber, areaCode, country, city, county, geoLocation);
-	}
-	
-	/**
-	 * Update the user's current location. There will ever only be an update function for the current location.
-	 * 
-	 * @param geoLocation
-	 * @param request
-	 * @return
-	 */
-	@RequestMapping(value="/updateCurrentLocation", method=RequestMethod.POST)
-	public @ResponseBody
-	ServerMessage updateCurrentLocation(
-		@RequestParam(required=true, value="city") String city,
-		@RequestParam(required=true, value="longitude") double longitude,
-		@RequestParam(required=true, value="latitude") double latitude,
-		HttpServletRequest request
-			) {
-		
-		User user = SessionHandler.getUserForSession(request);
-		
-		if(user == null)
-			return accountService.getMessagingService().getMessageForCode(StatusMessagesAndCodesService.SESSION_NON_EXISTENT);
-		
-		return accountService.updateUserCurrentLocation(user, city, longitude, latitude);
 	}
 }

@@ -21,11 +21,11 @@ import com.google.gson.Gson;
 import database_entities.FriendRequest;
 import database_entities.FriendRequest.FriendRequestStatus;
 import database_entities.User;
-import database_entities.UserRepository;
 import database_entities.exceptions.FatalDatabaseErrorException;
 import database_entities.exceptions.FriendRequestDoesNotExistException;
 import database_entities.exceptions.FriendRequestExistsException;
 import database_entities.exceptions.UserObjectNotInitializedForOperation;
+import database_entities.repositories.UserRepository;
 
 @Service
 public class FriendsService {
@@ -34,6 +34,34 @@ public class FriendsService {
 	
 	@Autowired private UserRepository userRepo;
 	@Autowired private StatusMessagesAndCodesService messageService;
+	
+	/**
+	 * Retrieve the account details associated with specified userId. 
+	 * This should be called anytime ANY user wants the account details of ANY other user.
+	 * 
+	 * @param userId
+	 */
+	public ServerMessage getAccountDetailsOfUserWithId(User caller, String userId) {
+		User user = userRepo.findOne(userId);
+		if(user == null)
+			return messageService.getMessageForCode(StatusMessagesAndCodesService.RETRIEVE_USER_DATA_FAILED_NO_USER);
+		
+		if(user.getFriendRequests() != null) {
+			for(FriendRequest request: user.getFriendRequests()) {
+				if(request.getStatus() == FriendRequestStatus.BLOCKED)
+					return messageService.getMessageForCode(StatusMessagesAndCodesService.RETRIEVE_USER_DATA_FAILED_BLOCKED);
+			}
+		}
+		
+		if(caller.getFriendRequests() != null) {
+			for(FriendRequest request: caller.getFriendRequests()) {
+				if(request.getStatus() == FriendRequestStatus.BLOCKED)
+					return messageService.getMessageForCode(StatusMessagesAndCodesService.RETRIEVE_USER_DATA_FAILED_BLOCKED);
+			}
+		}
+		
+		return messageService.getMessageWithData(StatusMessagesAndCodesService.RETRIEVE_USER_DATA_SUCCESS, screenUser(user));
+	}
 	
 	/**
 	 * Retrieve a list of all friends for the user.
@@ -68,7 +96,7 @@ public class FriendsService {
 		Iterable<User> users = userRepo.findAll(ids);
 		
 		for(User user: users) {
-			user = screenUserForFriend(user);
+			user = screenUser(user);
 		}
 		
 		log.debug("Retrieved Friends for " + caller.getUsername());
@@ -108,7 +136,7 @@ public class FriendsService {
 		Iterable<User> users = userRepo.findAll(ids);
 		
 		for(User user: users) {
-			user = screenUserForNonFriend(user);
+			user = screenUser(user);
 		}
 		
 		log.debug("Retrieved Blocked List for " + caller.getUsername());
@@ -149,7 +177,7 @@ public class FriendsService {
 		Iterable<User> users = userRepo.findAll(ids);
 		
 		for(User user: users) {
-			user = screenUserForNonFriend(user);
+			user = screenUser(user);
 		}
 		
 		log.debug("Retrieved Friends for " + caller.getUsername());
@@ -294,31 +322,13 @@ public class FriendsService {
 	}
 	
 	/**
-	 * Screen data that other user's should not see so that the User object can be safely transfered over the wire
 	 * 
-	 * This would be where Security Preferences would be incorporated! A hard-coded recommendation is used for now
-	 * 
-	 * @param user
-	 * @return ScreenedUser
-	 */
-	private User screenUserForFriend(User user) {
-		if(user.getAccountPreference() != null) 
-			user.getAccountPreference().setAddress(null);
-		
-		user.setTradeRequests(null);
-		user.setFriendRequests(null);
-		return user;
-	}
-	
-	/**
-	 * Screen data that non-friends should see so that the User object can be safely transfered over the wire
-	 * 
-	 * This would be where Security Preferences would be incorporated. A hard-coded recommendation is used for now
+	 * Remove data that would be sensitive. Meaning, block data from being retrieved from other users
 	 * 
 	 * @param user
 	 * @return ScreenedUser
 	 */
-	private User screenUserForNonFriend(User user) {
+	private User screenUser(User user) {
 		user.setAccountPreference(null);
 		user.setEmail(null);
 		user.setFriendRequests(null);
