@@ -188,7 +188,6 @@ public class TradeItemService {
 	 * @return ServerMessage
 	 */
 	public ServerMessage addImageToTradeItem(String userId, String itemId, byte[] imageData) {
-		
 		TradeItem item = itemRepo.findOne(itemId);
 		
 		//Trade Item does not exist (probably a client error)
@@ -198,9 +197,8 @@ public class TradeItemService {
 		if(item.getOwnerId().compareTo(userId) != 0)
 			return messageService.getMessageForCode(StatusMessagesAndCodesService.IMAGE_SAVE_FAIL_WRONG_OWNER);
 		
-		if(item.getImageIds() == null) {
+		if(item.getImageIds() == null)
 			item.setImageIds(new ArrayList<String>());
-		}
 		if(item.getImageIds().size() >= defaultProperties.getIntProperty("maxNumberOfImages"))
 			return messageService.getMessageForCode(StatusMessagesAndCodesService.IMAGE_SAVE_FAIL_MAX_IMAGES);
 		
@@ -255,7 +253,11 @@ public class TradeItemService {
 		if(imageId == null)
 			throw new IllegalArgumentException("Null values");
 		
-		return itemRepo.getTradeItemImage(imageId);
+		byte[] image = itemRepo.getTradeItemImage(imageId);
+		
+		System.out.println("Retrieved image of size: " + image.length + "B");
+		
+		return image;
 	}
 	
 	/**

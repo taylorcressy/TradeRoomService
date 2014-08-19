@@ -1,15 +1,21 @@
 package http_controllers;
 
+import java.util.List;
+
 import javax.servlet.http.HttpServletRequest;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.spockframework.gentyref.TypeToken;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
+
+import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
 
 import database_entities.User;
 import service.AccountCredentialService;
@@ -26,10 +32,16 @@ public class FriendController {
 	@Autowired private FriendsService friendService;
 	@Autowired private AccountCredentialService accountService;
 	
+	private Gson gson;
+	
+	public FriendController() {
+		this.gson = new GsonBuilder().setDateFormat("MMM dd, yyyy").create();
+	}
+	
 	@RequestMapping(value="/sendFriendRequest", method=RequestMethod.POST)
 	public @ResponseBody
 	ServerMessage sendFriendRequest(
-			@RequestParam(value="username", required=true) String username,
+			@RequestParam(value="userId", required=true) String userId,
 			HttpServletRequest request
 			) {
 		
@@ -39,15 +51,15 @@ public class FriendController {
 			return accountService.getMessagingService().getMessageForCode(StatusMessagesAndCodesService.LOGOUT_FAILED_SESSION);
 		}
 		
-		return friendService.sendFriendRequest(user, username);
+		return friendService.sendFriendRequest(user, userId);
 	}
 	
 	//Handles ACCEPT, DENY, BLOCK of a friend request
 	@RequestMapping(value="/respondToFriendRequest", method=RequestMethod.POST)
 	public @ResponseBody
 	ServerMessage respondToFriendRequest(
-			@RequestParam(value="username", required=true) String username,
-			@RequestParam(value="response", required=true) String response,		//ACCEPT, DENY, BLOCK
+			@RequestParam(value="userId", required=true) String userId,
+			@RequestParam(value="status", required=true) String response,		//ACCEPT, DENY, BLOCK
 			HttpServletRequest request
 			) {
 				
@@ -59,12 +71,12 @@ public class FriendController {
 		
 		String check = response.toUpperCase();
 		
-		if(check.compareTo("ACCEPT") == 0)
-			return friendService.acceptFriendRequest(user, username);
-		else if(check.compareTo("DENY") == 0)
-			return friendService.denyFriendRequest(user, username);
+		if(check.compareTo("ACCEPTED") == 0)
+			return friendService.acceptFriendRequest(user, userId);
+		else if(check.compareTo("DENIED") == 0)
+			return friendService.denyFriendRequest(user, userId);
 		else if(check.compareTo("BLOCK") == 0)
-			return friendService.blockFriendRequest(user, username);
+			return friendService.blockFriendRequest(user, userId);
 		else
 			return accountService.getMessagingService().getMessageForCode(StatusMessagesAndCodesService.RESPONSE_FRIEND_REQ_FAIL_INVALID);	
 	}
@@ -88,6 +100,44 @@ public class FriendController {
 			return accountService.getMessagingService().getMessageForCode(StatusMessagesAndCodesService.SESSION_NON_EXISTENT);
 		else 
 			return friendService.getAccountDetailsOfUserWithId(user, userId);
+	}
+	
+	@RequestMapping(value="/retrieveUsersWithIds", method=RequestMethod.GET)
+	public @ResponseBody
+	ServerMessage retrieveAllUsersWithIds(
+			@RequestParam(value="userIds", required=true) String userIdsJson,
+			HttpServletRequest request
+			) {
+		
+		User user = SessionHandler.getUserForSession(request);
+		if(user == null)
+			return accountService.getMessagingService().getMessageForCode(StatusMessagesAndCodesService.SESSION_NON_EXISTENT);
+		else {
+			List<String> userIds = this.gson.fromJson(userIdsJson, new TypeToken<List<String>>(){}.getType());
+			if(userIds == null)
+				return accountService.getMessagingService().getMessageForCode(StatusMessagesAndCodesService.JSON_PARSE_ERROR);
+			else
+				return friendService.getAllUsersWithIds(user, userIds);
+		}
+		
+	}
+	
+	@RequestMapping(value="/retrieveAllUsersWithFacebookIds", method=RequestMethod.GET)
+	public @ResponseBody
+	ServerMessage retrieveAllUsersWithFacebookIds(
+			@RequestParam(value="facebookIds", required=true) String facebookIdJson,
+			HttpServletRequest request
+			) {
+		User user = SessionHandler.getUserForSession(request);
+		if(user == null)
+			return accountService.getMessagingService().getMessageForCode(StatusMessagesAndCodesService.SESSION_NON_EXISTENT);
+		else {
+			List<String> facebookIds = this.gson.fromJson(facebookIdJson, new TypeToken<List<String>>(){}.getType());
+			if(facebookIds == null)
+				return accountService.getMessagingService().getMessageForCode(StatusMessagesAndCodesService.JSON_PARSE_ERROR);
+			else
+				return friendService.getAllFacebookUsers(user, facebookIds);
+		}
 	}
 	
 	@RequestMapping(value="/retrieveAllFriends", method=RequestMethod.GET)

@@ -64,6 +64,53 @@ public class FriendsService {
 	}
 	
 	/**
+	 * Get all user's associated with the user Ids list
+	 */
+	public ServerMessage getAllUsersWithIds(User caller, List<String> userIds) {
+		List<User> allUsers = userRepo.findAllByIdIn(userIds);
+		List<User> filteredUsers = new ArrayList<User>();
+		//Screen Users if they have blocked each other
+		for(User user: allUsers) {
+			if(user.getFriendRequests() != null) {
+				for(FriendRequest request: user.getFriendRequests()) {
+					if(request.getStatus() == FriendRequestStatus.BLOCKED)
+						continue;
+				}
+			}
+			
+			if(caller.getFriendRequests() != null) {
+				for(FriendRequest request: caller.getFriendRequests()) {
+					if(request.getStatus() == FriendRequestStatus.BLOCKED)
+						continue;
+				}
+			}
+			filteredUsers.add(screenUser(user));
+		}
+		return messageService.getMessageWithData(StatusMessagesAndCodesService.GET_REQUEST_SUCCESS, filteredUsers);
+	}
+	
+	/**
+	 * Retrieve a list of all user's with the associated Facebook ID
+	 * This will filter out all user's that are already friends
+	 */
+	 public ServerMessage getAllFacebookUsers(User caller, List<String> facebookIds) {
+		 List<User> users = userRepo.findAllByFacebookIdIn(facebookIds);
+		 List<User> filteredUsers = new ArrayList<User>();
+		 List<String> friendIds = new ArrayList<String>();
+		 for(FriendRequest request: caller.getFriendRequests()) {
+			 if(request.getReceiverId().compareTo(caller.getId()) == 0)
+				 friendIds.add(request.getSenderId());
+			 else
+				 friendIds.add(request.getReceiverId());
+		 }
+		 for(User next: users) {
+			 if(!caller.getFriendRequests().contains(next.getId()))
+				 filteredUsers.add(next);
+		 }
+		 return messageService.getMessageWithData(StatusMessagesAndCodesService.GET_REQUEST_SUCCESS, filteredUsers);
+	 }
+	
+	/**
 	 * Retrieve a list of all friends for the user.
 	 * 
 	 * @param caller
@@ -201,7 +248,7 @@ public class FriendsService {
 			boolean success = userRepo.sendFriendRequest(caller, id);
 			
 			if(success) 
-				return messageService.getMessageWithData(StatusMessagesAndCodesService.SEND_FRIEND_REQ_SUCCESS, new Gson().toJson(caller));
+				return messageService.getMessageForCode(StatusMessagesAndCodesService.SEND_FRIEND_REQ_SUCCESS);
 			else 
 				return messageService.getMessageForCode(StatusMessagesAndCodesService.SEND_FRIEND_REQ_FAIL_NO_USER);
 		}
@@ -328,11 +375,13 @@ public class FriendsService {
 	 * @param user
 	 * @return ScreenedUser
 	 */
-	private User screenUser(User user) {
+	public static User screenUser(User user) {
 		user.setAccountPreference(null);
 		user.setEmail(null);
 		user.setFriendRequests(null);
 		user.setTradeRequests(null);
+		user.setPosition(null);
+		
 		return user;
 	}
 }

@@ -11,6 +11,8 @@ package database_entities;
 import java.util.Date;
 import java.util.List;
 
+import database_entities.TradeItem.ItemCondition;
+
 public class TradeRequest {
 
 	private String from;				/*ID*/
@@ -21,6 +23,7 @@ public class TradeRequest {
 	private TradeRequestStatus status;
 	private TradeMethod methodFrom;
 	private TradeMethod methodTo;
+	private String message;
 	private boolean counterRequest;
 
 	/*
@@ -49,6 +52,14 @@ public class TradeRequest {
 		this.from = from;
 	}
 
+	public String getMessage() {
+		return message;
+	}
+	
+	public void setMessage(String message) {
+		this.message = message;
+	}
+	
 	public String getTo() {
 		return to;
 	}
@@ -204,7 +215,7 @@ public class TradeRequest {
 	public enum TradeMethod {
 		DROP_OFF(0),
 		PICK_UP(1),
-		EXCHANGE_CONTACT(2);
+		CONTACT(2);
 		
 		private int value;
 		
@@ -214,6 +225,16 @@ public class TradeRequest {
 		
 		public int getStatus() {
 			return this.value;
+		}
+		public static String[] names() {
+		    TradeMethod[] methods = values();
+		    String[] names = new String[methods.length];
+
+		    for (int i = 0; i < methods.length; i++) {
+		        names[i] = methods[i].name();
+		    }
+
+		    return names;
 		}
 	}
 }

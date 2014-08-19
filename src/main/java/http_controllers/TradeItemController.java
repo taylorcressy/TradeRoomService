@@ -226,9 +226,7 @@ public class TradeItemController {
 			System.out.println("No Session Error in Get Image By ID");
 			return "No Session Error".getBytes();
 		}
-		
-		log.info("Successfully Retrieved image from DB");
-		
+				
 		byte[] image = itemService.getImageForTradeItem(imageId);
 		
 		if(image != null)

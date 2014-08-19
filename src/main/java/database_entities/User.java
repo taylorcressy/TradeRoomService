@@ -37,7 +37,7 @@ public class User {
 	private String city;
 	private double [] position;
 	
-	private String profilePictureId;
+	private String profilePictureId;	//Needs implementing
 	
 	private AccountPreference accountPreference;
 	private TradeRoomMeta tradeRoomMeta;
@@ -45,7 +45,7 @@ public class User {
 	private List<FriendRequest> friendRequests;
 	private List<TradeRequest> tradeRequests;
 	
-	private UserRole role;
+	private UserRole role;	//Needs implementing
 
 	public User() {
 		// Empty constructor

@@ -18,10 +18,10 @@ public interface UserRepository extends PagingAndSortingRepository<User, String>
 	public User findOneByUsername(String username);
 	public User findOneByFacebookId(String facebookId);
 	
-	public List<User> findAllByUsernameLike(String search);
-	
-	/*Not sure if this works*/
+	public List<User> findAllByIdIn(List<String> ids);
+	public List<User> findAllByUsernameLike(String search);	
 	public List<User> findAllByUsernameLikeAndIdNot(String search, String id);
+	public List<User> findAllByFacebookIdIn(List<String> facebookIds);
 	
 	/*
 	 * Geo-Location Functions
