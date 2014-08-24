@@ -255,7 +255,8 @@ public class TradeItemService {
 		
 		byte[] image = itemRepo.getTradeItemImage(imageId);
 		
-		System.out.println("Retrieved image of size: " + image.length + "B");
+		if(image != null)
+			System.out.println("Retrieved image of size: " + image.length + "B");
 		
 		return image;
 	}
@@ -295,9 +296,10 @@ public class TradeItemService {
 		
 		if(!match)
 			return messageService.getMessageForCode(StatusMessagesAndCodesService.IMAGE_DELETE_FAILED_NO_IMAGE);
-		
+		System.out.println(imageId);
 		if(itemRepo.deleteTradeItemImage(imageId)) {
 			item.getImageIds().remove(index);
+			itemRepo.save(item);
 			return messageService.getMessageForCode(StatusMessagesAndCodesService.IMAGE_DELETE_SUCCESS);
 		}
 		else

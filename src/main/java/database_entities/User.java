@@ -42,8 +42,9 @@ public class User {
 	private AccountPreference accountPreference;
 	private TradeRoomMeta tradeRoomMeta;
 	private List<Rank> ranks;
-	private List<FriendRequest> friendRequests;
-	private List<TradeRequest> tradeRequests;
+	private List<FriendRequest> friendRequests;	//Eventually, we are going to want to convert these to IDs as well. (What a fun process that will be)
+
+	private List<String> tradeRequests;	//Ids
 	
 	private UserRole role;	//Needs implementing
 
@@ -82,7 +83,7 @@ public class User {
 	 * @param tradeRequests
 	 */
 	public User(String username, String email, AccountPreference pref, TradeRoomMeta tradeRoomMeta, List<Rank> ranks,
-			List<FriendRequest> friendRequests, List<TradeRequest> tradeRequests, Date dateJoined) {
+			List<FriendRequest> friendRequests, List<String> tradeRequests, Date dateJoined) {
 		this.position = new double[2];
 		this.username = username;
 		this.email = email;
@@ -165,11 +166,11 @@ public class User {
 		this.ranks = ranks;
 	}
 
-	public List<TradeRequest> getTradeRequests() {
+	public List<String> getTradeRequests() {
 		return tradeRequests;
 	}
 
-	public void setTradeRequests(List<TradeRequest> tradeRequests) {
+	public void setTradeRequests(List<String> tradeRequests) {
 		this.tradeRequests = tradeRequests;
 	}
 

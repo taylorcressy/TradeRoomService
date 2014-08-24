@@ -23,10 +23,10 @@
 172, Friend Request Failed: Friend Exists
 173, Friend Request Failed: Friend Blocked
 174, Friend Request Failed: Friend Pending
-175, Friend Request Response Success
-176, Friend Request Response Failed: No Request
-177, Friend Request Response Failed: Same Action Already Committed
-178, Friend Request Response Failed: Not A Valid Response
+176, Friend Request Response Success
+177, Friend Request Response Failed: No Request
+178, Friend Request Response Failed: Same Action Already Committed
+179, Friend Request Response Failed: Not A Valid Response
 200, Trade Item Creation Success
 201, Trade Item Creation Failed: Invalid Form
 202, Trade Item Creation Failed: Null Values
@@ -57,13 +57,29 @@
 280, Retrieve Trade Room Meta Success
 281, Retrieve Trade Room Meta Failed: No User
 282, Retrieve Trade Room Meta Failed: Permission Failure
+289, Counter Trade Request Success
 290, Send Trade Request Success
 291, Send Trade Request Failed: No User
 292, Send Trade Request Failed: Invalid Items
 293, Send Trade Request Failed: Invalid Trade Method
-294, Send Trade Request Failed: User Has No Trade Items To Trade
+294, Send Trade Request Failed: No Trade Items
+295, Send Trade Request Failed: Trade Request Exists
+296, Respond To Trade Request Success
+297, Respond To Trade Request Failed: Request does not belong to caller
+298, Respond To Trade Request Failed: Invalid Trade Request Status Option
+299, Trade Request Does Not Exist
 300, Update GeoLocation Success
 301, Update GeoLocation Failed
+305, Cancel Trade Request Success
+306, Cancel Trade Request Failed: Invalid Caller
+307, Cancel Trade Request Failed: Invalid Status
+310, Clear Trade Request Success
+311, Clear Trade Request Failed: Invalid Caller
+312, Clear Trade Request Failed: Invalid Status
+313, Mark Trade Request Read: Success
+314, Mark Trade Request Read Failed: Invalid Caller
+315, Mark Trade Request Read Failed: Invalid Status
+316, Mark Trade Request Read Failed: Already Marked
 400, Search Successful
 401, Search Failed
 402, Search Empty

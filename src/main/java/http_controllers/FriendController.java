@@ -108,7 +108,7 @@ public class FriendController {
 			@RequestParam(value="userIds", required=true) String userIdsJson,
 			HttpServletRequest request
 			) {
-		
+				
 		User user = SessionHandler.getUserForSession(request);
 		if(user == null)
 			return accountService.getMessagingService().getMessageForCode(StatusMessagesAndCodesService.SESSION_NON_EXISTENT);
