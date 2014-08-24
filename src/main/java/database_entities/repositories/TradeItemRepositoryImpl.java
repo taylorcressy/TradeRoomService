@@ -90,12 +90,8 @@ public class TradeItemRepositoryImpl implements TradeItemRepositoryExt {
 	 */
 	@Override
 	public boolean deleteTradeItemImage(String imageId) {
-		gridOperations.remove(new ObjectId(imageId));
-		Integer deleted = gridOperations.getDB().getLastError().getInt("n");
-		
-		if(deleted == 1)
-			return true;
-		else return false;
+		gridOperations.remove(new ObjectId(imageId));	/*Need to figure out how to verify the delete was successful*/
+		return true;
 	}
 	
 	/**

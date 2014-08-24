@@ -8,42 +8,65 @@
  */
 package database_entities;
 
+import java.util.Collections;
 import java.util.Date;
 import java.util.List;
 
-import database_entities.TradeItem.ItemCondition;
+import org.springframework.data.annotation.Id;
 
 public class TradeRequest {
 
+	@Id
+	private String id;
+	
 	private String from;				/*ID*/
 	private String to;					/*ID*/
 	private List<String> fromItems;		/*Ids*/
 	private List<String> toItems;		/*Ids*/
 	private Date dateInitiated;
 	private TradeRequestStatus status;
-	private TradeMethod methodFrom;
-	private TradeMethod methodTo;
+	private TradeMethod method;
 	private String message;
 	private boolean counterRequest;
+	
+	/*
+	 * 	These booleans can only be set once the Trade is set to ACCEPTED. 
+	 * 
+	 * Eventually, these will probably moved into a separate collection for some kind of logging purposes.
+	 * (i.e. when both booleans are set to true, remove from TradeRequest collection, place into accepted requests collection and 
+	 * allow users to view there past trades)
+	 */
+	private boolean receivedBySource;	//"from" has received the trade
+	private boolean receivedByTarget;	//"to" has received the trade
 
 	/*
 	 * Constructor
 	 */
 	public TradeRequest(String from, String to, List<String> fromItems, List<String> toItems,
-			Date dateInitiated, TradeRequestStatus status, TradeMethod methodTo, TradeMethod methodFrom, boolean counterRequest) {
+			Date dateInitiated, TradeRequestStatus status, TradeMethod method, boolean counterRequest) {
 		this.from = from;
 		this.to = to;
 		this.fromItems = fromItems;
 		this.toItems = toItems;
 		this.dateInitiated = dateInitiated;
 		this.status = status;
-		this.methodFrom = methodTo;
+		this.method = method;
 		this.counterRequest = counterRequest;
+		this.receivedBySource = false;
+		this.receivedByTarget = false;
 	}
 
 	/*
 	 * Getters / Setters
 	 */
+	public String getId() {
+		return this.id;
+	}
+	
+	public void setId(String id) {
+		this.id = id;
+	}
+	
 	public String getFrom() {
 		return from;
 	}
@@ -68,20 +91,12 @@ public class TradeRequest {
 		this.to = to;
 	}
 	
-	public TradeMethod getMethodFrom() {
-		return methodFrom;
+	public void setMethod(TradeMethod method) {
+		this.method = method;
 	}
-
-	public void setMethodFrom(TradeMethod methodFrom) {
-		this.methodFrom = methodFrom;
-	}
-
-	public TradeMethod getMethodTo() {
-		return methodTo;
-	}
-
-	public void setMethodTo(TradeMethod methodTo) {
-		this.methodTo = methodTo;
+	 
+	public TradeMethod getMethod() {
+		return this.method;
 	}
 
 	public boolean isCounterRequest() {
@@ -122,6 +137,22 @@ public class TradeRequest {
 
 	public void setStatus(TradeRequestStatus status) {
 		this.status = status;
+	}
+
+	public boolean isReceivedBySource() {
+		return receivedBySource;
+	}
+
+	public void setReceivedBySource(boolean receivedBySource) {
+		this.receivedBySource = receivedBySource;
+	}
+
+	public boolean isReceivedByTarget() {
+		return receivedByTarget;
+	}
+
+	public void setReceivedByTarget(boolean receivedByTarget) {
+		this.receivedByTarget = receivedByTarget;
 	}
 
 	/*
@@ -185,6 +216,40 @@ public class TradeRequest {
 			return false;
 		return true;
 	}
+	
+	/**
+	 * Check to see if the Trade Requests are the same. NOTE: This is not an equals method because we not checking to see if it is
+	 * the same object. 
+	 * 
+	 * The message will not be taken into account. All we care about is the items being traded and the method.
+	 * So a trade request with the same items but different method, is aloud.... for now.
+	 * 
+	 * NOTE: This method has the side effect of sorting the item ID Lists
+	 * 
+	 * @param TradeRequest
+	 * @return boolean
+	 */
+	public boolean isSame(TradeRequest other) {
+		if(other.getMethod() != this.getMethod())
+			return false;
+		
+		//Optimization, if the arrays sizes are different, no need for comparison
+		if(other.getFromItems().size() != this.getFromItems().size() ||
+				other.getToItems().size() != this.getToItems().size())
+			return false;
+		
+		//Now sort the arrays, and compare them (We sort, because the comparison uses order)
+		Collections.sort(other.getFromItems());
+		Collections.sort(other.getToItems());
+		Collections.sort(this.getFromItems());
+		Collections.sort(this.getToItems());
+		
+		if(other.getFromItems().equals(this.getFromItems()) && 
+				other.getToItems().equals(this.getToItems()))
+			return true;	//They are equal
+		
+		else return false;
+	}
 
 	/*
 	 * (non-Javadoc)
@@ -199,7 +264,8 @@ public class TradeRequest {
 	public enum TradeRequestStatus {
 		ACCEPTED(0), 
 		PENDING(1), 
-		DECLINED(2);
+		DECLINED(2),
+		RECEIVED(3);
 		
 		private int value;
 		
@@ -212,6 +278,9 @@ public class TradeRequest {
 		}
 	}
 	
+	/**
+	 * Need to think about these enums
+	 */
 	public enum TradeMethod {
 		DROP_OFF(0),
 		PICK_UP(1),
@@ -237,4 +306,5 @@ public class TradeRequest {
 		    return names;
 		}
 	}
+
 }
