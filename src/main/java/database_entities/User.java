@@ -11,22 +11,18 @@ package database_entities;
 import java.util.Date;
 import java.util.List;
 
-import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.index.Indexed;
 import org.springframework.data.mongodb.core.mapping.Document;
 import org.springframework.format.annotation.DateTimeFormat;
 
 @Document
-public class User {
-
-	@Id
-	private String id;
+public class User extends DatabaseDocument{
 
 	@Indexed(unique = true)
 	private String username;
 	@Indexed(unique = true)
 	private String email;
-
+	
 	@DateTimeFormat(pattern="dd-MM-yyyy")
 	private Date dateJoined;
 	@DateTimeFormat(pattern="dd-MM-yyyy")
@@ -98,14 +94,14 @@ public class User {
 	/*
 	 * Getters / Setters
 	 */
-	public String getId() {
+	/*public String getId() {
 		return id;
 	}
 
 	public void setId(String id) {
 		this.id = id;
-	}
-
+	} */
+	
 	public String getCity() {
 		return city;
 	}
@@ -121,7 +117,7 @@ public class User {
 	public void setPosition(double[] position) {
 		this.position = position;
 	}
-
+	
 	public String getProfilePictureId() {
 		return profilePictureId;
 	}

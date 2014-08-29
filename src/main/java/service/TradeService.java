@@ -172,10 +172,18 @@ public class TradeService {
 	 */
 	public ServerMessage respondToTradeRequest(User caller, String requestId, TradeRequestStatus status) {
 		//First retrieve the reference to the TradeRequest
-		TradeRequest request = requestRepo.findOne(caller.getId());
+		TradeRequest request = requestRepo.findOne(requestId);
 		
 		if(request == null)
 			return messageService.getMessageForCode(StatusMessagesAndCodesService.TRADE_REQ_NON_EXISTENT);
+		
+		//Ensure that this is a pending request
+		if(request.getStatus() != TradeRequestStatus.PENDING)
+			return messageService.getMessageForCode(StatusMessagesAndCodesService.TRADE_REQ_NOT_PENDING);
+		
+		//Ensure that it is the target of a request that is replying
+		if(request.getTo().compareTo(caller.getId()) != 0)
+			return messageService.getMessageForCode(StatusMessagesAndCodesService.RESP_TRADE_REQ_FAILED_USER_NOT_TARGET);
 		
 		//Check to ensure the TradeRequest is owned by the caller
 		if(request.getFrom().compareTo(caller.getId()) != 0 &&
@@ -188,6 +196,7 @@ public class TradeService {
 
 		//Update the request
 		request.setStatus(status);
+		requestRepo.save(request);
 		
 		return messageService.getMessageForCode(StatusMessagesAndCodesService.RESP_TRADE_REQ_SUCCESS);
 	}
@@ -362,7 +371,7 @@ public class TradeService {
 		
 		//Only a target of a declined can clear
 		if(request.getStatus() == TradeRequestStatus.DECLINED) {
-			if(caller.getId().compareTo(request.getTo()) != 0)
+			if(caller.getId().compareTo(request.getFrom()) != 0)
 				return messageService.getMessageForCode(StatusMessagesAndCodesService.CLEAR_TRADE_REQ_FAILED_INVALID_USER);
 			
 			//Delete the message

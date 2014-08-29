@@ -10,12 +10,11 @@ package database_entities;
 
 import java.util.List;
 
-import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.index.TextIndexed;
 import org.springframework.data.mongodb.core.mapping.Document;
 
 @Document
-public class TradeItem {
+public class TradeItem extends DatabaseDocument{
 	/**
 	 * Inner class - specifies the item condition of a trade item
 	 */
@@ -50,10 +49,7 @@ public class TradeItem {
 		    return names;
 		}
 	}
-	
-
-	@Id private String id;
-	
+		
 	@TextIndexed(weight=3) private String name;
 	@TextIndexed private String description;
 	@TextIndexed(weight=2) private List<String> tags;
@@ -115,13 +111,6 @@ public class TradeItem {
 	/*
 	 * Getters/Setters
 	 */
-	public String getId() {
-		return id;
-	}
-
-	public void setId(String id) {
-		this.id = id;
-	}
 
 	public String getName() {
 		return name;

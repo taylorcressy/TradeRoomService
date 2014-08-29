@@ -92,9 +92,11 @@ public class StatusMessagesAndCodesService {
 	public static int TRADE_REQ_NON_EXISTENT					= 299;
 	public static int UPDATE_GEOLOCATION_SUCCESS 				= 300;
 	public static int UPDATE_GEOLOCATION_FAILED 				= 301;
+	public static int TRADE_REQ_NOT_PENDING						= 302;
 	public static int CANCEL_TRADE_REQ_SUCCESS					= 305;
 	public static int CANCEL_TRADE_REQ_FAILED_INVALID_USER		= 306;
 	public static int CANCEL_TRADE_REQ_FAILED_INVALID_STATUS	= 307;
+	public static int RESP_TRADE_REQ_FAILED_USER_NOT_TARGET		= 308;
 	public static int CLEAR_TRADE_REQ_SUCCESS					= 310;
 	public static int CLEAR_TRADE_REQ_FAILED_INVALID_USER		= 311;
 	public static int CLEAR_TRADE_REQ_FAILED_INVALID_STATUS		= 312;

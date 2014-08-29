@@ -65,14 +65,16 @@
 294, Send Trade Request Failed: No Trade Items
 295, Send Trade Request Failed: Trade Request Exists
 296, Respond To Trade Request Success
-297, Respond To Trade Request Failed: Request does not belong to caller
+297, Respond To Trade Request Failed: Request Does Not Belong To Caller
 298, Respond To Trade Request Failed: Invalid Trade Request Status Option
 299, Trade Request Does Not Exist
 300, Update GeoLocation Success
 301, Update GeoLocation Failed
+302, Respond To Trade Request Failed: Trade Request Is Not A Pending Request
 305, Cancel Trade Request Success
 306, Cancel Trade Request Failed: Invalid Caller
 307, Cancel Trade Request Failed: Invalid Status
+308, Respond To Trade Request Failed: The Target User Is The Only User Who Can Reply To A Pending Trade Request
 310, Clear Trade Request Success
 311, Clear Trade Request Failed: Invalid Caller
 312, Clear Trade Request Failed: Invalid Status

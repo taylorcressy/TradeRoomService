@@ -12,13 +12,11 @@ import java.util.Collections;
 import java.util.Date;
 import java.util.List;
 
-import org.springframework.data.annotation.Id;
+import org.springframework.data.mongodb.core.mapping.Document;
 
-public class TradeRequest {
+@Document
+public class TradeRequest extends DatabaseDocument{
 
-	@Id
-	private String id;
-	
 	private String from;				/*ID*/
 	private String to;					/*ID*/
 	private List<String> fromItems;		/*Ids*/
@@ -59,14 +57,6 @@ public class TradeRequest {
 	/*
 	 * Getters / Setters
 	 */
-	public String getId() {
-		return this.id;
-	}
-	
-	public void setId(String id) {
-		this.id = id;
-	}
-	
 	public String getFrom() {
 		return from;
 	}
